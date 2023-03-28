@@ -142,6 +142,7 @@ def test_SignInWithoutPassword(driver):
     with allure.step('When User fills "InValid Password" in form data on "login" screen'):
         find_byXpath(email_xpath, driver).send_keys(Storage.userData1['Email'])
         find_byXpath(password_xpath, driver).send_keys("123ja")
+        find_byXpath(LoginBtn_xpath, driver).click()
 
     with allure.step('Then User Should see an error "Email Address Or Password Invalid"'):
         verify_element_is_present(loginErrorMessage_xpath, driver)

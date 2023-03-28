@@ -32,15 +32,15 @@ class Storage:
     skipAllDummy = False
     failedTestCases = []
 
-# it runs before eveything else
+
+# it runs before everything else
 
 
 @pytest.fixture(scope='function')
 def driver(request):
     print(request.config.option.browser)
     BROWSER = request.config.option.browser
-
-    headless = ""
+    driver = None
 
     if request.config.option.headless == "1":
         headless = "--headless"
@@ -56,8 +56,7 @@ def driver(request):
             "profile.default_content_setting_values.notifications": 1
         })
 
-        driver = webdriver.Chrome(service=Chrome_service(
-            ChromeDriverManager().install()), options=chrome_options)
+        driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
     elif BROWSER == "FIREFOX":
         firefox_options = Firefox_options()
@@ -66,8 +65,8 @@ def driver(request):
         firefox_options.add_argument("start-maximized")
         firefox_options.set_preference(
             'permissions.default.desktop-notification', 1)
-        driver = webdriver.Firefox(service=Firefox_service(
-            GeckoDriverManager().install()), options=firefox_options)
+        driver = webdriver.Firefox(
+            GeckoDriverManager().install(), options=firefox_options)
 
     elif BROWSER == "OPERA":
         pass
@@ -76,7 +75,7 @@ def driver(request):
 
     else:
         pytest.skip(allow_module_level=True,
-                    reason="Please provide a browser name to innitiate tests")
+                    reason="Please provide a browser name to initiate tests")
 
     driver.implicitly_wait(7)
     driver.maximize_window()
@@ -84,7 +83,6 @@ def driver(request):
     # sleep(180)
     driver.close()
     driver.quit()
-
 
 # pytest Tests --alluredir=reports --screenshot=on --browser CHROME  -v -s --headless 0
 # pytest xdist
