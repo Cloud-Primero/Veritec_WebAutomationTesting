@@ -2,7 +2,7 @@ Feature: Temporary Worker Feature
 
     @TemporaryWorkerScreen @Regression @Sanity
     Scenario: Add new temporary worker Screen
-        Given Go to the "Base" url
+        Given Go to the Base url
         Then Verify user is on "Login" screen
         When User fills "Valid" form data on "login" screen
         Then Verify user is on "HomePage" screen

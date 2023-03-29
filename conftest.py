@@ -8,6 +8,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--browser",
         action="store",
+        default="CHROME"
     )
     parser.addoption(
         "--headless", action="store"
@@ -23,6 +24,7 @@ class dotdict(dict):
 
 class Storage:
     baseUrl = 'http://52.70.226.96:85'
+    temproryWorkerUrl = 'http://52.70.226.96:85/temporary-worker/add'
     userData1 = {'Email': 'hassan.abbas@cloudprimero.com',
                  'Password': 'PowerPoint@123'}
     userData2 = {'Email': 'ahassan.abbas@cloudprimero.com',

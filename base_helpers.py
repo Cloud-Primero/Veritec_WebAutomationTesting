@@ -10,13 +10,13 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException, ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException, \
+    ElementNotInteractableException, ElementNotVisibleException
 
 from selenium.webdriver.chrome.options import Options as Chrome_options
 from selenium.webdriver.chrome.service import Service as Chrome_service
 from selenium.webdriver.firefox.options import Options as Firefox_options
 from selenium.webdriver.firefox.service import Service as Firefox_service
-
 
 # from selenium.webdriver.opera.options import Options as Ooptions
 # from selenium.webdriver.opera.service import Service as Oservice
@@ -26,24 +26,20 @@ from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from selenium.webdriver.common.keys import Keys
 
-
 waitTimer = 7
 
 
-@allure.step("find the element {0}")
 def find_byXpath(xpath, driver):
     try:
         ele = driver.find_element(By.XPATH, xpath)
         print("Element Found with Xpath", xpath)
         return ele
-
-    except:
+    except NoSuchElementException:
         sleep(2)
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
 
 
-@allure.step("find the element {0}")
 def find_byXpathAndWait(xpath, driver):
     try:
         ele = WebDriverWait(driver, waitTimer).until(
@@ -53,13 +49,12 @@ def find_byXpathAndWait(xpath, driver):
         print("Element Found with Xpath", xpath)
         return ele
 
-    except:
+    except NoSuchElementException:
         sleep(2)
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
 
 
-@allure.step("find the elements {0}")
 def find_Elements_byXpath(xpath, driver):
     try:
         ele = driver.find_elements(By.XPATH, xpath)
@@ -74,39 +69,41 @@ def find_Elements_byXpath(xpath, driver):
             f"Couldn't find element with xpath : {xpath}")
 
 
-@allure.step("find the elements with wait {0}")
-def find_byXpathAndWait(xpath, driver):
-    try:
-        ele = WebDriverWait(driver, waitTimer).until(
-            EC.presence_of_all_elements_located((By.XPATH, xpath))
-        )
-
-        print("Element Found with Xpath", xpath)
-        return ele
-
-    except:
-        pytest.fail(
-            f"Couldn't find element with xpath : {xpath}")
-
-
-@allure.step("{2}")
-def check_IFRedirectedON_ValidUrl(expectedUrl, driver, TestStepDesc):
+def check_IFRedirectedON_ValidUrl(expectedUrl, driver):
     assert expectedUrl == driver.current_url
 
 
-@allure.step("Visit Url {0}")
 def visitUrl(url, driver):
     driver.get(url)
 
 
-@allure.step('Verify if Element is present {0}')
 def verify_element_is_present(xpath, driver):
     try:
         find_byXpathAndWait(xpath, driver)
     except NoSuchElementException:
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
+    try:
+        scroll_into_element(xpath, driver)
+        find_byXpathAndWait(xpath, driver).is_displayed()
+    except ElementNotVisibleException:
+        pytest.fail(
+            f"Element with xpath : {xpath} is not visible")
 
+
+def scroll_into_element(xpath, driver):
+    """find element by xpath and scroll to that element"""
+    element = None
+    try:
+        element = find_byXpath(xpath, driver)
+    except NoSuchElementException:
+        pytest.fail(
+            f"Couldn't find element with xpath : {xpath}")
+    if element is not None:
+        driver.execute_script("arguments[0].scrollIntoView();", element)
+    else:
+        pytest.fail(
+            f"Couldn't Scroll into element with xpath : {xpath}")
 
 # --------------------------------------
 
@@ -247,14 +244,6 @@ def verify_element_is_present(xpath, driver):
 #     else:
 #         element = locator
 #     return element.text
-
-
-# def scroll_into_element(self, locator, timeout=10):
-#     if type(locator) == list:
-#         element = get_element(self.driver, locator, timeout)
-#     else:
-#         element = locator
-#     self.driver.execute_script("arguments[0].scrollIntoView();", element)
 
 
 # def switch_to_default(self):

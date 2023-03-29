@@ -6,12 +6,6 @@ from Locators.LoginLocators import *
 @allure.feature("Login Feature")
 @allure.story("Sign in with valid credentials")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.description("""
-Given Go to the "Base" url
-Then Verify user is on "Login" screen
-When User fills "Valid" form data on "login" screen
-Then Verify user is on "HomePage" screen
-""")
 @pytest.mark.regression
 @pytest.mark.sanity
 @pytest.mark.smoke
@@ -21,8 +15,8 @@ def test_SignInThroughValidCredentials(driver):
     with allure.step('Given Go to the "Base" url'):
         visitUrl(Storage.baseUrl, driver)
 
-    check_IFRedirectedON_ValidUrl(
-        loginUrl, driver, 'Then Verify user is on Login screen')
+    with allure.step('Then Verify user is on Login screen'):
+        check_IFRedirectedON_ValidUrl(loginUrl, driver)
 
     with allure.step('When User fills "Valid" form data on "login" screen'):
         find_byXpath(email_xpath, driver).send_keys(Storage.userData1['Email'])
@@ -37,12 +31,6 @@ def test_SignInThroughValidCredentials(driver):
 @allure.feature("Login Feature")
 @allure.story("Sign in with Invalid credentials")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.description("""
-Given Go to the "Base" url
-Then Verify user is on "Login" screen
-When User fills "InValid" form data on "login" screen
-Then User should see an Error "Email Address Or Password Invalid"
-""")
 @pytest.mark.regression
 @pytest.mark.sanity
 def test_SignInThroughInValidCredentials(driver):
@@ -51,8 +39,8 @@ def test_SignInThroughInValidCredentials(driver):
     with allure.step('Given Go to the "Base" url'):
         visitUrl(Storage.baseUrl, driver)
 
-    check_IFRedirectedON_ValidUrl(
-        loginUrl, driver, 'Then Verify user is on Login screen')
+    with allure.step('Then Verify user is on Login screen'):
+        check_IFRedirectedON_ValidUrl(loginUrl, driver)
 
     with allure.step('When User fills "InValid" form data on "login" screen'):
         find_byXpath(email_xpath, driver).send_keys(Storage.userData2['Email'])
@@ -67,12 +55,6 @@ def test_SignInThroughInValidCredentials(driver):
 @allure.feature("Login Feature")
 @allure.story("Sign in without credentials")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.description("""
-Given Go to the "Base" url
-Then Verify user is on "Login" screen
-When User taps on logn button without entering form data
-Then User Should see Erros "Please Enter Your Email!" and "Please Enter Your Password"
-""")
 @pytest.mark.regression
 @pytest.mark.sanity
 def test_SignInWithoutCredentials(driver):
@@ -81,8 +63,8 @@ def test_SignInWithoutCredentials(driver):
     with allure.step('Given Go to the "Base" url'):
         visitUrl(Storage.baseUrl, driver)
 
-    check_IFRedirectedON_ValidUrl(
-        loginUrl, driver, 'Then Verify user is on Login screen')
+    with allure.step('Then Verify user is on Login screen'):
+        check_IFRedirectedON_ValidUrl(loginUrl, driver)
 
     with allure.step('When User taps on logn button without entering form data'):
         find_byXpath(LoginBtn_xpath, driver).click()
@@ -95,12 +77,6 @@ def test_SignInWithoutCredentials(driver):
 @allure.feature("Login Feature")
 @allure.story("Sign in With Invalid Email")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.description("""
-Given Go to the "Base" url
-Then Verify user is on "Login" screen
-When User fills "InValid Email" form data on "login" screen
-Then User Should see an error "The input is not valid E-mail!"
-""")
 @pytest.mark.regression
 @pytest.mark.sanity
 def test_SignInWithInvalidEmail(driver):
@@ -109,8 +85,8 @@ def test_SignInWithInvalidEmail(driver):
     with allure.step('Given Go to the "Base" url'):
         visitUrl(Storage.baseUrl, driver)
 
-    check_IFRedirectedON_ValidUrl(
-        loginUrl, driver, 'Then Verify user is on Login screen')
+    with allure.step('Then Verify user is on Login screen'):
+        check_IFRedirectedON_ValidUrl(loginUrl, driver)
 
     with allure.step('When User fills "InValid Email" form data on "login" screen'):
         find_byXpath(email_xpath, driver).send_keys("123ja")
@@ -122,12 +98,6 @@ def test_SignInWithInvalidEmail(driver):
 @allure.feature("Login Feature")
 @allure.story("Sign in With Invalid Password")
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.description("""
-Given Go to the "Base" url
-Then Verify user is on "Login" screen
-When User fills "InValid Password" in form data on "login" screen
-Then User Should see an error "Email Address Or Password Invalid"
-""")
 @pytest.mark.regression
 @pytest.mark.sanity
 def test_SignInWithoutPassword(driver):
@@ -136,8 +106,8 @@ def test_SignInWithoutPassword(driver):
     with allure.step('Given Go to the "Base" url'):
         visitUrl(Storage.baseUrl, driver)
 
-    check_IFRedirectedON_ValidUrl(
-        loginUrl, driver, 'Then Verify user is on Login screen')
+    with allure.step('Then Verify user is on Login screen'):
+        check_IFRedirectedON_ValidUrl(loginUrl, driver)
 
     with allure.step('When User fills "InValid Password" in form data on "login" screen'):
         find_byXpath(email_xpath, driver).send_keys(Storage.userData1['Email'])
@@ -146,3 +116,7 @@ def test_SignInWithoutPassword(driver):
 
     with allure.step('Then User Should see an error "Email Address Or Password Invalid"'):
         verify_element_is_present(loginErrorMessage_xpath, driver)
+
+
+def loginwithSteps(driver):
+    test_SignInThroughValidCredentials(driver)
