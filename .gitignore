@@ -152,4 +152,5 @@ cython_debug/
 #.idea/
 *.xml
 reports/
+reports
 *.json
