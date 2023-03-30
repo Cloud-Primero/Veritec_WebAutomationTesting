@@ -5,3 +5,4 @@ webdriver-manager
 pytest-failed-screenshot
 pytest-xdist
 pytest-order
+pytest-rerunfailures

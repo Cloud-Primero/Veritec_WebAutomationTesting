@@ -12,7 +12,7 @@ Feature: Temporary Worker Feature
         Then Verify user is on "Add Temporary Worker" screen
 
     @TemporaryWorkerMandatoryFields @Regression @Sanity
-    Scenario: Add new temporary worker Mandatory Fields Screen
+    Scenario: Verify temporary worker Mandatory Fields Screen
         Given Go to the "Base" url
         Then Verify user is on "Login" screen
         When User fills "Valid" form data on "login" screen

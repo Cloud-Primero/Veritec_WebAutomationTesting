@@ -1,7 +1,9 @@
-import pytest
-from pytest import fixture
-from conftest import *
+# import pytest
+# from pytest import fixture
+# from conftest import *
 from base_helpers import *
+import os
+from base_helpers import get_randomEmail
 
 
 def pytest_addoption(parser):
@@ -22,8 +24,23 @@ class dotdict(dict):
     __delattr__ = dict.__delitem__
 
 
+class TemoraryWorkerDataClass:
+    FirstName = 'Terminator'
+    LastName = 'Genesis'
+    Nationality = 'Pakistani'
+    PhoneCountry = 'Pakistan'
+    PhoneNumber = '3058440924'
+    Address = 'Chandigarh road mia wali khairpur karachi Sindh'
+    Email = get_randomEmail()
+    EmployeeType = 'Temporary Worker'
+    StartDate = '30-APR-2023'
+    filepath = os.getcwd() + '/TestData/terminator.jpeg'
+    remarks = 'Quality Assurance, is a critical process in software development that ensures the final product'
+
+
 class Storage:
     baseUrl = 'http://52.70.226.96:85'
+    temporaryWorkerData = TemoraryWorkerDataClass()
     temproryWorkerUrl = 'http://52.70.226.96:85/temporary-worker/add'
     userData1 = {'Email': 'hassan.abbas@cloudprimero.com',
                  'Password': 'PowerPoint@123'}
@@ -58,7 +75,8 @@ def driver(request):
             "profile.default_content_setting_values.notifications": 1
         })
 
-        driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        driver = webdriver.Chrome(
+            ChromeDriverManager().install(), options=chrome_options)
 
     elif BROWSER == "FIREFOX":
         firefox_options = Firefox_options()
@@ -67,8 +85,9 @@ def driver(request):
         firefox_options.add_argument("start-maximized")
         firefox_options.set_preference(
             'permissions.default.desktop-notification', 1)
-        driver = webdriver.Firefox(
-            GeckoDriverManager().install(), options=firefox_options)
+        # driver = webdriver.Firefox(service=Firefox_service(
+        #     GeckoDriverManager().install()), options=firefox_options)
+        driver = webdriver.Firefox(GeckoDriverManager().install(), options=firefox_options)
 
     elif BROWSER == "OPERA":
         pass
@@ -87,4 +106,6 @@ def driver(request):
     driver.quit()
 
 # pytest Tests --alluredir=reports --screenshot=on --browser CHROME  -v -s --headless 0
+# parallel test execution with 2 retry on failure
+# Pytest Tests  --alluredir=reports --screenshot=on --browser CHROME  --headless 0 -n 10 --reruns 2
 # pytest xdist

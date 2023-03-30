@@ -12,7 +12,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, ElementClickInterceptedException, \
     ElementNotInteractableException, ElementNotVisibleException
-
+import random
+import string
 from selenium.webdriver.chrome.options import Options as Chrome_options
 from selenium.webdriver.chrome.service import Service as Chrome_service
 from selenium.webdriver.firefox.options import Options as Firefox_options
@@ -26,7 +27,17 @@ from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from selenium.webdriver.common.keys import Keys
 
-waitTimer = 7
+waitTimer = 15
+
+
+def get_randomEmail():
+    return ''.join(random.choice(string.ascii_letters) for _ in range(15)) + "1421@gmail.com"
+
+
+def press_Enter(driver):
+    actions = ActionChains(driver)
+    actions.send_keys(Keys.ENTER)
+    actions.perform()
 
 
 def find_byXpath(xpath, driver):
@@ -35,9 +46,15 @@ def find_byXpath(xpath, driver):
         print("Element Found with Xpath", xpath)
         return ele
     except NoSuchElementException:
-        sleep(2)
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
+
+
+def click_on_element_js(xpath, driver):
+    try:
+        find_byXpath(xpath, driver).click()
+    except ElementClickInterceptedException:
+        driver.execute_script("arguments[0].click();", find_byXpath(xpath, driver))
 
 
 def find_byXpathAndWait(xpath, driver):
@@ -50,7 +67,23 @@ def find_byXpathAndWait(xpath, driver):
         return ele
 
     except NoSuchElementException:
-        sleep(2)
+        pytest.fail(
+            f"Couldn't find element with xpath : {xpath}")
+
+
+def find_Elements_byXpathAndWait(xpath, driver):
+    try:
+        ele = WebDriverWait(driver, waitTimer).until(
+            EC.presence_of_all_elements_located((By.XPATH, xpath))
+        )
+        if len(ele) == 0:
+            pytest.fail(
+                f"Couldn't find elements with xpath : {xpath}")
+
+        print("Elements Found with Xpath", xpath)
+        return ele
+
+    except NoSuchElementException:
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
 
@@ -58,15 +91,15 @@ def find_byXpathAndWait(xpath, driver):
 def find_Elements_byXpath(xpath, driver):
     try:
         ele = driver.find_elements(By.XPATH, xpath)
-        print("Element Found with Xpath", xpath)
+        print("Elements Found with Xpath", xpath)
         if len(ele) == 0:
             pytest.fail(
-                f"Couldn't find elements with xpath : {xpath}")
+                f"Couldn't find elements with xpath : {xpath} list has length 0")
         return ele
 
     except:
         pytest.fail(
-            f"Couldn't find element with xpath : {xpath}")
+            f"Couldn't find elements with xpath : {xpath}")
 
 
 def check_IFRedirectedON_ValidUrl(expectedUrl, driver):
@@ -75,6 +108,14 @@ def check_IFRedirectedON_ValidUrl(expectedUrl, driver):
 
 def visitUrl(url, driver):
     driver.get(url)
+
+
+def verify_visibility_of_element_located(xpath, driver):
+    try:
+        WebDriverWait(driver, waitTimer).until(EC.visibility_of_element_located((By.XPATH, xpath)))
+    except ElementNotVisibleException:
+        pytest.fail(
+            f"Element not visible with xpath : {xpath}")
 
 
 def verify_element_is_present(xpath, driver):
@@ -100,6 +141,7 @@ def scroll_into_element(xpath, driver):
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
     if element is not None:
+        print('scrolling to', xpath)
         driver.execute_script("arguments[0].scrollIntoView();", element)
     else:
         pytest.fail(
@@ -185,14 +227,6 @@ def scroll_into_element(xpath, driver):
 # def from_list_get_elements_size(self, locator, timeout=10):
 #     elements = get_elements(self.driver, locator, timeout)
 #     return len(elements)
-
-
-# def click_on_element_js(self, locator, timeout=10):
-#     if type(locator) == list:
-#         element = get_element(self.driver, locator, timeout)
-#     else:
-#         element = locator
-#     self.driver.execute_script("arguments[0].click();", element)
 
 
 # def from_list_click_on_element_js(self, locator, timeout=10):
