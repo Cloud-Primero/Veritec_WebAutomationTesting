@@ -43,7 +43,6 @@ class TemoraryWorkerDataClass:
     BikeNameOrLicencePlate = None
     VCA_Status = None
     VCA_Insurance = None
-
     StartDate = '30-APR-2023'
     filepath = os.getcwd() + '/TestData/terminator.jpeg'
     remarks = 'Quality Assurance, is a critical process in software development that ensures the final product'
@@ -52,7 +51,8 @@ class TemoraryWorkerDataClass:
 class Storage:
     baseUrl = 'http://52.70.226.96:85'
     temporaryWorkerData = TemoraryWorkerDataClass()
-    temproryWorkerUrl = 'http://52.70.226.96:85/temporary-worker/add'
+    temporaryWorkerUrlAdd = 'http://52.70.226.96:85/temporary-worker/add'
+    temporaryWorkerUrl = 'http://52.70.226.96:85/temporary-worker'
     userData1 = {'Email': 'hassan.abbas@cloudprimero.com',
                  'Password': 'PowerPoint@123'}
     userData2 = {'Email': 'ahassan.abbas@cloudprimero.com',

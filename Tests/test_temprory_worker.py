@@ -25,11 +25,19 @@ def test_TemporaryWorkerScreen(driver):
         find_byXpath(AddNewWorker_xpath, driver).click()
 
     with allure.step('Then Verify user is on "Add Temporary Worker" screen'):
-        check_IFRedirectedON_ValidUrl(Storage.temproryWorkerUrl, driver)
+        check_IFRedirectedON_ValidUrl(Storage.temporaryWorkerUrlAdd, driver)
 
 
 def VisitTemporary_WorkerPageWithSteps(driver):
     test_TemporaryWorkerScreen(driver)
+
+
+def VisitTemporaryWorkerPageWithLogin(driver):
+    loginwithSteps(driver)
+    visitUrl(Storage.temporaryWorkerUrl, driver)
+
+    with allure.step('Then User clicks "Temporary Worker" button on "Homepage" screen'):
+        find_byXpath(TemproryworkersMainLink_xpath, driver).click()
 
 
 @allure.feature("Temporary Worker Feature")
@@ -151,7 +159,7 @@ def fillTransportInfo(driver):
         find_Elements_byXpathAndWait(BikeNameList_xpath, driver)[0].click()
 
 
-def fillOthersInfo(driver,file=False):
+def fillOthersInfo(driver, file=False):
     with allure.step('Enter Other Information and Upload File'):
         find_byXpath(VCA_YES_xpath, driver).click()
         find_byXpath(VCAStatusInput, driver).click()
@@ -190,15 +198,20 @@ def saveAndVerifyIfInfoSaved(driver):
         verify_visibility_of_element_located(TemporaryDataSave_SuccessMessage_xpath, driver)
 
 
+def sortTableByIdDescendingOrder(driver):
+    scroll_into_element(mainTemporaryTable_xpath, driver)
+    verify_loaderAndWait(TableLoader_xpath, driver)
+    find_byXpathAndWait(sortTableByID_xpath, driver).click()
+    sleep(1)
+    find_byXpathAndWait(sortTableByID_xpath, driver).click()
+
+
 def verifyDataInTable(driver):
     with allure.step('Verify Data in Table'):
         # scroll_into_element(BACKButton_xpath, driver)
         click_on_element_js(BACKButton_xpath, driver)
         sleep(2)
-        verify_loaderAndWait(TableLoader_xpath, driver)
-        find_byXpathAndWait(sortTableByID_xpath, driver).click()
-        sleep(1)
-        find_byXpathAndWait(sortTableByID_xpath, driver).click()
+        sortTableByIdDescendingOrder(driver)
         # assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
         verify_Data_TableCell_ByTextXpath(driver,
                                           [
@@ -240,56 +253,72 @@ def test_TemporaryWorkerAdd(driver):
         fillClientAndProjectInfo(driver)
         fillResidenceInfo(driver)
         fillTransportInfo(driver)
-        fillOthersInfo(driver,file=True)
+        fillOthersInfo(driver, file=True)
         fillAndHandleRemarksInfo(driver)
         saveAndVerifyIfInfoSaved(driver)
         verifyDataInTable(driver)
 
 
-# ----------- TEMP
-
 @allure.feature("Temporary Worker Feature")
-@allure.story("Add new temporary worker with asterisks data")
+@allure.story("Delete Last Temporary worker")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
-@pytest.mark.skip('NOT yet')
-def test_TemporaryWorkerAddAsterisksDat(driver):
-    loginwithSteps(driver)
-    with allure.step('Then User clicks "Temporary Worker" button on "Homepage" screen'):
-        find_byXpath(TemproryworkersMainLink_xpath, driver).click()
+def test_TemporaryWorkerDeleteLast(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    with allure.step('When User Tap on ID on table to sort it by descending order'):
+        sortTableByIdDescendingOrder(driver)
+    with allure.step('And User select the last Item and Tap on Delete Button'):
+        find_byXpath(mainRowRadioButton, driver).click()
+        find_byXpath(mainDeleteButton, driver).click()
+        find_byXpathAndWait(mainDeleteYesButton, driver).click()
+    with allure.step('Then User should see a "Temporary Worker Deleted" message'):
+        verify_visibility_of_element_located(mainTemporaryDelete_SuccessMessage_xpath, driver)
 
-    with allure.step('Then Scroll "Down" into view "Add New Temporary Worker" Section'):
-        scroll_into_element(AddNewWorker_xpath, driver)
 
+@allure.feature("Temporary Worker Feature")
+@allure.story("Delete First Temporary worker")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_TemporaryWorkerDeleteLast(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    sortTableByIdDescendingOrder(driver)
+    with allure.step('And User select the last Item and Tap on Delete Button'):
+        find_byXpath(mainRowRadioButton, driver).click()
+        find_byXpath(mainDeleteButton, driver).click()
+        find_byXpathAndWait(mainDeleteYesButton, driver).click()
+    with allure.step('Then User should see a "Temporary Worker Deleted" message'):
+        verify_visibility_of_element_located(mainTemporaryDelete_SuccessMessage_xpath, driver)
+
+
+@allure.feature("Temporary Worker Feature")
+@allure.story("Delete First Temporary worker")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_TemporaryWorkerDeleteFirst(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    scroll_into_element(mainTemporaryTable_xpath, driver)
     verify_loaderAndWait(TableLoader_xpath, driver)
-    find_byXpathAndWait(sortTableByID_xpath, driver).click()
-    sleep(1)
-    find_byXpathAndWait(sortTableByID_xpath, driver).click()
-    NameXpath = TableRow_xpath(TW.FirstName + ' ' + TW.LastName)
-    assert find_byXpathAndGet_text(NameXpath, driver) == TW.FirstName + ' ' + TW.LastName
-    assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
-    sleep(10)
-
-
-# ------------
+    with allure.step('And User select the First Item and Tap on Delete Button'):
+        find_byXpath(mainRowRadioButton, driver).click()
+        find_byXpath(mainDeleteButton, driver).click()
+        find_byXpathAndWait(mainDeleteYesButton, driver).click()
+    with allure.step('Then User should see a "Temporary Worker Deleted" message'):
+        verify_visibility_of_element_located(mainTemporaryDelete_SuccessMessage_xpath, driver)
 
 
 @allure.feature("Temporary Worker Feature")
-@allure.story("Add new temporary worker with asterisks data")
+@allure.story("Check All Necessary Buttons Visible")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
-@pytest.mark.skip(reason="Not Implemented Yet")
-def test_TemporaryWorkerAddAsterisksData(driver):
-    VisitTemporary_WorkerPageWithSteps(driver)
-
-
-@allure.feature("Temporary Worker Feature")
-@allure.story("Delete Temporary worker")
-@allure.severity(allure.severity_level.NORMAL)
-@pytest.mark.regression
-@pytest.mark.sanity
-@pytest.mark.skip(reason="Not Implemented Yet")
-def test_TemporaryWorkerDelete(driver):
-    VisitTemporary_WorkerPageWithSteps(driver)
+def test_TemporaryWorkerDeleteFirst(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    with allure.step('And Check if All Necessary Buttons are visible'):
+        verify_visibility_of_element_located(mainDeleteButton,driver)
+        verify_visibility_of_element_located(mainEditButton, driver)
+        verify_visibility_of_element_located(mainShowHideButton, driver)
+        verify_visibility_of_element_located(mainExportButton, driver)
+        verify_visibility_of_element_located(mainFilterButton, driver)

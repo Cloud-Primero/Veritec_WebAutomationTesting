@@ -98,4 +98,17 @@ sortTableByID_xpath = '//th//span[@class="ant-table-column-title" and text()="ID
 
 TableRow_xpath = lambda x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[' \
                            f'1]//td[@title="{x}"]'
-TextRow_xpath = lambda x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[1]//td[text()="{x}"]'
+TextRow_xpath = lambda \
+        x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[1]//td[text()="{x}"]'
+
+# MainPage Elements
+mainTemporaryTable_xpath = '//table'
+mainRowRadioButton = '(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[' \
+                     '1]//input[@type="radio"]'
+mainDeleteButton = '//a[text()="Delete"]'
+mainEditButton = '//a[text()="Edit"]'
+mainFilterButton = '//a[text()="Filter"]'
+mainExportButton = '//a[text()="Export"]'
+mainShowHideButton = '//a[text()="Show/Hide"]'
+mainDeleteYesButton = '//div[@class="ant-modal-content"]//button//span[text()="Yes"]/parent::button'
+mainTemporaryDelete_SuccessMessage_xpath = '//span[text()="Temporary Worker Deleted Successfully"]'
