@@ -82,6 +82,148 @@ def test_TemporaryWorkerMandatoryFields(driver):
         verify_element_is_present(AddRemarkButton_xpath, driver)
 
 
+def fillUserPersonalData(driver):
+    with allure.step('Enter Personal Data'):
+        find_byXpath(FirstName_xpath, driver).send_keys(TW.FirstName)
+        find_byXpath(LastName_xpath, driver).send_keys(TW.LastName)
+        find_byXpath(Select_Nationality_xpath, driver).click()
+        sleep(1)
+        find_byXpath(Select_Nationality_xpath, driver).send_keys(TW.Nationality)
+        find_byXpathAndWait(CountryName_xpath(TW.Nationality), driver).click()
+        find_byXpath(PhoneNumber_CountryFlagIcon_xpath, driver).click()
+        find_byXpath(PhoneNumberCountry_searchInput, driver).send_keys(TW.PhoneCountry)
+        find_byXpath(PhoneNumberCountryNameClick(TW.PhoneCountry), driver).click()
+        find_byXpath(PhoneNumberInput_xpath, driver).click()
+        find_byXpath(PhoneNumberInput_xpath, driver).send_keys(TW.PhoneNumber)
+        find_byXpath(address_xpath, driver).send_keys(TW.Address)
+
+        find_byXpath(email_xpath, driver).send_keys(Email)
+        scroll_into_element(email_xpath, driver)
+
+
+def fillEmployeeStatus(driver):
+    with allure.step('Enter Employee Status'):
+        find_byXpath(EmployeeTypeInput_xpath, driver).click()
+        find_byXpathAndWait(EmployeeTypeInput_xpath, driver).send_keys(TW.EmployeeType)
+        find_byXpath(EmployeeTypeSelect_xpath(TW.EmployeeType), driver).click()
+        if find_byXpath(ContractTypeInleen_xpath, driver).is_selected():
+            pass
+        else:
+            find_byXpath(ContractTypeInleen_xpath, driver).click()
+        scroll_into_element(EmployeeStatusHeading_xpath, driver)
+        find_byXpath(startDate_xpath, driver).click()
+        find_byXpath(startDate_xpath, driver).send_keys(TW.StartDate)
+        press_Enter(driver)
+
+
+def fillClientAndProjectInfo(driver):
+    with allure.step('Enter Client & Project Information'):
+        scroll_into_element(ClientAndProjectHeading_xpath, driver)
+        click_on_element_js(AssignClient_xpath, driver)
+        sleep(3)
+        TW.Client = find_Elements_byXpathAndWait_getText(AssignClientsList_xpath, driver)[1]
+        find_Elements_byXpathAndWait(AssignClientsList_xpath, driver)[1].click()
+        find_byXpath(AssignProject_xpath, driver).click()
+        TW.Project = find_Elements_byXpathAndWait_getText(AssignProjectsList_xpath, driver)[1]
+        find_Elements_byXpathAndWait(AssignProjectsList_xpath, driver)[1].click()
+
+
+def fillResidenceInfo(driver):
+    with allure.step('Enter Residence Information'):
+        scroll_into_element(ResidenceHeading_xpath, driver)
+        click_on_element_js(HouseCheckBox_xpath(TW.HouseCheckBOX), driver)
+        click_on_element_js(HouseNameInputSelect_xpath, driver)
+        TW.HouseName = find_Elements_byXpathAndWait_getText(HouseNameList_xpath, driver)[0]
+        find_Elements_byXpathAndWait(HouseNameList_xpath, driver)[0].click()
+        find_byXpathAndWait(HouseBedInputSelect_xpath, driver).click()
+        TW.BedNumber = find_Elements_byXpathAndWait_getText(HouseBedList_xpath, driver)[0]
+        find_Elements_byXpathAndWait(HouseBedList_xpath, driver)[0].click()
+
+
+def fillTransportInfo(driver):
+    with allure.step('Enter Transport Information'):
+        scroll_into_element(TransportHeading_xpath, driver)
+        click_on_element_js(TransportYes_xapth, driver)
+        click_on_element_js(TypeTransportBike_xpath, driver)
+        find_byXpath(NameBikeInput_xpath, driver).click()
+        sleep(1)
+        TW.BikeNameOrLicencePlate = find_Elements_byXpathAndWait_getText(BikeNameList_xpath, driver)[0]
+        find_Elements_byXpathAndWait(BikeNameList_xpath, driver)[0].click()
+
+
+def fillOthersInfo(driver,file=False):
+    with allure.step('Enter Other Information and Upload File'):
+        find_byXpath(VCA_YES_xpath, driver).click()
+        find_byXpath(VCAStatusInput, driver).click()
+        TW.VCA_Status = find_Elements_byXpathAndWait_getText(VCAStatusList, driver)[0]
+        find_Elements_byXpath(VCAStatusList, driver)[0].click()
+        find_byXpath(VCA_ValidUntil, driver).click()
+        find_byXpath(VCA_ValidUntil, driver).send_keys(TW.StartDate)
+        press_Enter(driver)
+        find_byXpath(VCA_Insurance, driver).click()
+        TW.VCA_Insurance = find_Elements_byXpathAndWait_getText(VCA_InsuranceList_xpath, driver)[1]
+        find_Elements_byXpath(VCA_InsuranceList_xpath, driver)[1].click()
+        print(TW.filepath)
+        if file:
+            find_byXpath(VCA_DocumentFile_xpath, driver).send_keys(TW.filepath)
+
+
+def fillAndHandleRemarksInfo(driver):
+    with allure.step('Handle Remarks Popup and Add Remarks'):
+        find_byXpath(AddRemarkButton_xpath, driver).click()
+        verify_element_is_present(RemarkIframe_xpath, driver)
+        sleep(1)
+        find_byXpathAndWait(remarksDate_xpath, driver).click()
+        find_byXpathAndWait(remarksDate_xpath, driver).send_keys(TW.StartDate)
+        press_Enter(driver)
+        sleep(1)
+        find_byXpathAndWait(statusInput_xpath, driver).click()
+        find_Elements_byXpath(status_dropDownList_xpath, driver)[0].click()
+        find_byXpath(remarksTextareaInput_xpath, driver).send_keys(TW.remarks)
+        find_byXpath(addRemarksBtn_xpath, driver).click()
+
+
+def saveAndVerifyIfInfoSaved(driver):
+    with allure.step('Click Add Temporary Button to save information'):
+        find_byXpath(AddTemporaryButton_xpath, driver).click()
+    with allure.step('Verify from Success popup-message'):
+        verify_visibility_of_element_located(TemporaryDataSave_SuccessMessage_xpath, driver)
+
+
+def verifyDataInTable(driver):
+    with allure.step('Verify Data in Table'):
+        # scroll_into_element(BACKButton_xpath, driver)
+        click_on_element_js(BACKButton_xpath, driver)
+        sleep(2)
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        find_byXpathAndWait(sortTableByID_xpath, driver).click()
+        sleep(1)
+        find_byXpathAndWait(sortTableByID_xpath, driver).click()
+        # assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
+        verify_Data_TableCell_ByTextXpath(driver,
+                                          [
+                                              Email,
+                                              TW.BedNumber,
+                                              TW.TransportType,
+                                              TW.VCA_Status
+
+                                          ])
+        verify_Data_TableCell(driver,
+                              [
+                                  f'{TW.FirstName} {TW.LastName}',
+                                  f'92{TW.PhoneNumber}',
+                                  TW.Nationality,
+                                  TW.Address,
+                                  TW.EmployeeType,
+                                  TW.Client,
+                                  TW.Project,
+                                  replace_string(TW.House),
+                                  # TW.HouseName,
+                                  TW.BikeNameOrLicencePlate,
+                                  TW.VCA_Insurance
+                              ])
+
+
 @allure.feature("Temporary Worker Feature")
 @allure.story("Add new temporary worker")
 @allure.severity(allure.severity_level.NORMAL)
@@ -93,128 +235,15 @@ def test_TemporaryWorkerAdd(driver):
     populate_Bike()
     populate_Car()
     with allure.step('Then User fills "All" form data on "Temporary Worker" screen'):
-        with allure.step('Enter Personal Data'):
-            find_byXpath(FirstName_xpath, driver).send_keys(TW.FirstName)
-            find_byXpath(LastName_xpath, driver).send_keys(TW.LastName)
-            find_byXpath(Select_Nationality_xpath, driver).click()
-            sleep(1)
-            find_byXpath(Select_Nationality_xpath, driver).send_keys(TW.Nationality)
-            find_byXpathAndWait(CountryName_xpath(TW.Nationality), driver).click()
-            find_byXpath(PhoneNumber_CountryFlagIcon_xpath, driver).click()
-            find_byXpath(PhoneNumberCountry_searchInput, driver).send_keys(TW.PhoneCountry)
-            find_byXpath(PhoneNumberCountryNameClick(TW.PhoneCountry), driver).click()
-            find_byXpath(PhoneNumberInput_xpath, driver).click()
-            find_byXpath(PhoneNumberInput_xpath, driver).send_keys(TW.PhoneNumber)
-            find_byXpath(address_xpath, driver).send_keys(TW.Address)
-
-            find_byXpath(email_xpath, driver).send_keys(Email)
-            scroll_into_element(email_xpath, driver)
-
-        with allure.step('Enter Employee Status'):
-            find_byXpath(EmployeeTypeInput_xpath, driver).click()
-            find_byXpathAndWait(EmployeeTypeInput_xpath, driver).send_keys(TW.EmployeeType)
-            find_byXpath(EmployeeTypeSelect_xpath(TW.EmployeeType), driver).click()
-            if find_byXpath(ContractTypeInleen_xpath, driver).is_selected():
-                pass
-            else:
-                find_byXpath(ContractTypeInleen_xpath, driver).click()
-            scroll_into_element(EmployeeStatusHeading_xpath, driver)
-            find_byXpath(startDate_xpath, driver).click()
-            find_byXpath(startDate_xpath, driver).send_keys(TW.StartDate)
-            press_Enter(driver)
-
-        with allure.step('Enter Client & Project Information'):
-            scroll_into_element(ClientAndProjectHeading_xpath, driver)
-            click_on_element_js(AssignClient_xpath, driver)
-            sleep(3)
-            TW.Client = find_Elements_byXpathAndWait_getText(AssignClientsList_xpath, driver)[1]
-            find_Elements_byXpathAndWait(AssignClientsList_xpath, driver)[1].click()
-            find_byXpath(AssignProject_xpath, driver).click()
-            TW.Project = find_Elements_byXpathAndWait_getText(AssignProjectsList_xpath, driver)[1]
-            find_Elements_byXpathAndWait(AssignProjectsList_xpath, driver)[1].click()
-
-        with allure.step('Enter Residence Information'):
-            scroll_into_element(ResidenceHeading_xpath, driver)
-            click_on_element_js(HouseCheckBox_xpath(TW.HouseCheckBOX), driver)
-            click_on_element_js(HouseNameInputSelect_xpath, driver)
-            TW.HouseName = find_Elements_byXpathAndWait_getText(HouseNameList_xpath, driver)[0]
-            find_Elements_byXpathAndWait(HouseNameList_xpath, driver)[0].click()
-            find_byXpath(HouseBedInputSelect_xpath, driver).click()
-            TW.BedNumber = find_Elements_byXpathAndWait_getText(HouseBedList_xpath, driver)[0]
-            find_Elements_byXpathAndWait(HouseBedList_xpath, driver)[0].click()
-
-        with allure.step('Enter Transport Information'):
-            scroll_into_element(TransportHeading_xpath, driver)
-            click_on_element_js(TransportYes_xapth, driver)
-            click_on_element_js(TypeTransportBike_xpath, driver)
-            find_byXpath(NameBikeInput_xpath, driver).click()
-            sleep(1)
-            TW.BikeNameOrLicencePlate = find_Elements_byXpathAndWait_getText(BikeNameList_xpath, driver)[0]
-            find_Elements_byXpathAndWait(BikeNameList_xpath, driver)[0].click()
-
-        with allure.step('Enter Other Information and Upload File'):
-            find_byXpath(VCA_YES_xpath, driver).click()
-            find_byXpath(VCAStatusInput, driver).click()
-            TW.VCA_Status = find_Elements_byXpathAndWait_getText(VCAStatusList, driver)[0]
-            find_Elements_byXpath(VCAStatusList, driver)[0].click()
-            find_byXpath(VCA_ValidUntil, driver).click()
-            find_byXpath(VCA_ValidUntil, driver).send_keys(TW.StartDate)
-            press_Enter(driver)
-            find_byXpath(VCA_Insurance, driver).click()
-            TW.VCA_Insurance = find_Elements_byXpathAndWait_getText(VCA_InsuranceList_xpath,driver)[1]
-            find_Elements_byXpath(VCA_InsuranceList_xpath, driver)[1].click()
-            print(TW.filepath)
-            # find_byXpath(VCA_DocumentFile_xpath, driver).send_keys(TW.filepath)
-
-        with allure.step('Handle Remarks Popup and Add Remarks'):
-            find_byXpath(AddRemarkButton_xpath, driver).click()
-            verify_element_is_present(RemarkIframe_xpath, driver)
-            sleep(1)
-            find_byXpathAndWait(remarksDate_xpath, driver).click()
-            find_byXpathAndWait(remarksDate_xpath, driver).send_keys(TW.StartDate)
-            press_Enter(driver)
-            sleep(1)
-            find_byXpathAndWait(statusInput_xpath, driver).click()
-            find_Elements_byXpath(status_dropDownList_xpath, driver)[0].click()
-            find_byXpath(remarksTextareaInput_xpath, driver).send_keys(TW.remarks)
-            find_byXpath(addRemarksBtn_xpath, driver).click()
-
-        with allure.step('Click Add Temporary Button to save information'):
-            find_byXpath(AddTemporaryButton_xpath, driver).click()
-        with allure.step('Verify from Success popup-message'):
-            verify_visibility_of_element_located(TemporaryDataSave_SuccessMessage_xpath, driver)
-
-        with allure.step('Verify Data in Table'):
-            # scroll_into_element(BACKButton_xpath, driver)
-            click_on_element_js(BACKButton_xpath, driver)
-            sleep(2)
-            verify_loaderAndWait(TableLoader_xpath, driver)
-            find_byXpathAndWait(sortTableByID_xpath, driver).click()
-            sleep(1)
-            find_byXpathAndWait(sortTableByID_xpath, driver).click()
-            # assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
-            verify_Data_TableCell_ByTextXpath(driver,
-                                              [
-                                                  Email,
-                                                  TW.BedNumber,
-                                                  TW.TransportType,
-                                                  TW.VCA_Status
-
-                                              ])
-            verify_Data_TableCell(driver,
-                                  [
-                                      f'{TW.FirstName} {TW.LastName}',
-                                      f'92{TW.PhoneNumber}',
-                                      TW.Nationality,
-                                      TW.Address,
-                                      TW.EmployeeType,
-                                      TW.Client,
-                                      TW.Project,
-                                      replace_string(TW.House),
-                                      # TW.HouseName,
-                                      TW.BikeNameOrLicencePlate,
-                                      TW.VCA_Insurance
-                                  ])
+        fillUserPersonalData(driver)
+        fillEmployeeStatus(driver)
+        fillClientAndProjectInfo(driver)
+        fillResidenceInfo(driver)
+        fillTransportInfo(driver)
+        fillOthersInfo(driver,file=True)
+        fillAndHandleRemarksInfo(driver)
+        saveAndVerifyIfInfoSaved(driver)
+        verifyDataInTable(driver)
 
 
 # ----------- TEMP
