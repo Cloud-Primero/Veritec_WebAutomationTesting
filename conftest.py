@@ -5,7 +5,6 @@ from base_helpers import *
 import os
 from base_helpers import get_randomEmail
 
-
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
@@ -29,10 +28,22 @@ class TemoraryWorkerDataClass:
     LastName = 'Genesis'
     Nationality = 'Pakistani'
     PhoneCountry = 'Pakistan'
-    PhoneNumber = '3058440924'
+    PhoneNumber = '3058440922'
     Address = 'Chandigarh road mia wali khairpur karachi Sindh'
     Email = get_randomEmail()
     EmployeeType = 'Temporary Worker'
+    Client = None
+    Project = None
+    Contract_Type = 'Inleen Dorleen'
+    House = 'Yes'
+    HouseCheckBOX = "true"
+    HouseName = None
+    TransportType = 'Bike'
+    BedNumber = None
+    BikeNameOrLicencePlate = None
+    VCA_Status = None
+    VCA_Insurance = None
+
     StartDate = '30-APR-2023'
     filepath = os.getcwd() + '/TestData/terminator.jpeg'
     remarks = 'Quality Assurance, is a critical process in software development that ensures the final product'

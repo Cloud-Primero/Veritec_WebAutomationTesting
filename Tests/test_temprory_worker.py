@@ -2,8 +2,10 @@ from conftest import *
 from base_helpers import *
 from Locators.TempWorkersLocators import *
 from test_Login import loginwithSteps
+from API_Helpers import populate_Bike, populate_Car
 
 TW = Storage.temporaryWorkerData
+Email = TW.Email
 
 
 @allure.feature("Temporary Worker Feature")
@@ -61,8 +63,7 @@ def test_TemporaryWorkerMandatoryFields(driver):
         verify_element_is_present(AssignProject_xpath, driver)
         # Residence
         verify_element_is_present(ResidenceHeading_xpath, driver)
-        verify_element_is_present(HouseYesCheckBox_xpath, driver)
-        verify_element_is_present(HouseNoCheckBox_xpath, driver)
+        verify_element_is_present(HouseCheckBox_xpath(TW.HouseCheckBOX), driver)
         verify_element_is_present(HouseNameInputSelect_xpath, driver)
         verify_element_is_present(HouseBedInputSelect_xpath, driver)
         # Transport
@@ -87,7 +88,10 @@ def test_TemporaryWorkerMandatoryFields(driver):
 @pytest.mark.regression
 @pytest.mark.sanity
 def test_TemporaryWorkerAdd(driver):
+    global Email
     VisitTemporary_WorkerPageWithSteps(driver)
+    populate_Bike()
+    populate_Car()
     with allure.step('Then User fills "All" form data on "Temporary Worker" screen'):
         with allure.step('Enter Personal Data'):
             find_byXpath(FirstName_xpath, driver).send_keys(TW.FirstName)
@@ -102,7 +106,8 @@ def test_TemporaryWorkerAdd(driver):
             find_byXpath(PhoneNumberInput_xpath, driver).click()
             find_byXpath(PhoneNumberInput_xpath, driver).send_keys(TW.PhoneNumber)
             find_byXpath(address_xpath, driver).send_keys(TW.Address)
-            find_byXpath(email_xpath, driver).send_keys(TW.Email)
+
+            find_byXpath(email_xpath, driver).send_keys(Email)
             scroll_into_element(email_xpath, driver)
 
         with allure.step('Enter Employee Status'):
@@ -121,44 +126,55 @@ def test_TemporaryWorkerAdd(driver):
         with allure.step('Enter Client & Project Information'):
             scroll_into_element(ClientAndProjectHeading_xpath, driver)
             click_on_element_js(AssignClient_xpath, driver)
+            sleep(3)
+            TW.Client = find_Elements_byXpathAndWait_getText(AssignClientsList_xpath, driver)[1]
             find_Elements_byXpathAndWait(AssignClientsList_xpath, driver)[1].click()
             find_byXpath(AssignProject_xpath, driver).click()
+            TW.Project = find_Elements_byXpathAndWait_getText(AssignProjectsList_xpath, driver)[1]
             find_Elements_byXpathAndWait(AssignProjectsList_xpath, driver)[1].click()
 
         with allure.step('Enter Residence Information'):
             scroll_into_element(ResidenceHeading_xpath, driver)
-            click_on_element_js(HouseYesCheckBox_xpath, driver)
+            click_on_element_js(HouseCheckBox_xpath(TW.HouseCheckBOX), driver)
             click_on_element_js(HouseNameInputSelect_xpath, driver)
-            find_Elements_byXpathAndWait(HouseNameList_xpath, driver)[1].click()
+            TW.HouseName = find_Elements_byXpathAndWait_getText(HouseNameList_xpath, driver)[0]
+            find_Elements_byXpathAndWait(HouseNameList_xpath, driver)[0].click()
             find_byXpath(HouseBedInputSelect_xpath, driver).click()
-            find_Elements_byXpathAndWait(HouseBedList_xpath, driver)[1].click()
+            TW.BedNumber = find_Elements_byXpathAndWait_getText(HouseBedList_xpath, driver)[0]
+            find_Elements_byXpathAndWait(HouseBedList_xpath, driver)[0].click()
 
         with allure.step('Enter Transport Information'):
             scroll_into_element(TransportHeading_xpath, driver)
             click_on_element_js(TransportYes_xapth, driver)
             click_on_element_js(TypeTransportBike_xpath, driver)
             find_byXpath(NameBikeInput_xpath, driver).click()
+            sleep(1)
+            TW.BikeNameOrLicencePlate = find_Elements_byXpathAndWait_getText(BikeNameList_xpath, driver)[0]
             find_Elements_byXpathAndWait(BikeNameList_xpath, driver)[0].click()
 
         with allure.step('Enter Other Information and Upload File'):
             find_byXpath(VCA_YES_xpath, driver).click()
             find_byXpath(VCAStatusInput, driver).click()
+            TW.VCA_Status = find_Elements_byXpathAndWait_getText(VCAStatusList, driver)[0]
             find_Elements_byXpath(VCAStatusList, driver)[0].click()
             find_byXpath(VCA_ValidUntil, driver).click()
             find_byXpath(VCA_ValidUntil, driver).send_keys(TW.StartDate)
             press_Enter(driver)
             find_byXpath(VCA_Insurance, driver).click()
+            TW.VCA_Insurance = find_Elements_byXpathAndWait_getText(VCA_InsuranceList_xpath,driver)[1]
             find_Elements_byXpath(VCA_InsuranceList_xpath, driver)[1].click()
             print(TW.filepath)
-            find_byXpath(VCA_DocumentFile_xpath, driver).send_keys(TW.filepath)
+            # find_byXpath(VCA_DocumentFile_xpath, driver).send_keys(TW.filepath)
 
         with allure.step('Handle Remarks Popup and Add Remarks'):
             find_byXpath(AddRemarkButton_xpath, driver).click()
             verify_element_is_present(RemarkIframe_xpath, driver)
-            find_byXpath(remarksDate_xpath, driver).click()
-            find_byXpath(remarksDate_xpath, driver).send_keys(TW.StartDate)
+            sleep(1)
+            find_byXpathAndWait(remarksDate_xpath, driver).click()
+            find_byXpathAndWait(remarksDate_xpath, driver).send_keys(TW.StartDate)
             press_Enter(driver)
-            find_byXpath(statusInput_xpath, driver).click()
+            sleep(1)
+            find_byXpathAndWait(statusInput_xpath, driver).click()
             find_Elements_byXpath(status_dropDownList_xpath, driver)[0].click()
             find_byXpath(remarksTextareaInput_xpath, driver).send_keys(TW.remarks)
             find_byXpath(addRemarksBtn_xpath, driver).click()
@@ -167,6 +183,67 @@ def test_TemporaryWorkerAdd(driver):
             find_byXpath(AddTemporaryButton_xpath, driver).click()
         with allure.step('Verify from Success popup-message'):
             verify_visibility_of_element_located(TemporaryDataSave_SuccessMessage_xpath, driver)
+
+        with allure.step('Verify Data in Table'):
+            # scroll_into_element(BACKButton_xpath, driver)
+            click_on_element_js(BACKButton_xpath, driver)
+            sleep(2)
+            verify_loaderAndWait(TableLoader_xpath, driver)
+            find_byXpathAndWait(sortTableByID_xpath, driver).click()
+            sleep(1)
+            find_byXpathAndWait(sortTableByID_xpath, driver).click()
+            # assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
+            verify_Data_TableCell_ByTextXpath(driver,
+                                              [
+                                                  Email,
+                                                  TW.BedNumber,
+                                                  TW.TransportType,
+                                                  TW.VCA_Status
+
+                                              ])
+            verify_Data_TableCell(driver,
+                                  [
+                                      f'{TW.FirstName} {TW.LastName}',
+                                      f'92{TW.PhoneNumber}',
+                                      TW.Nationality,
+                                      TW.Address,
+                                      TW.EmployeeType,
+                                      TW.Client,
+                                      TW.Project,
+                                      replace_string(TW.House),
+                                      # TW.HouseName,
+                                      TW.BikeNameOrLicencePlate,
+                                      TW.VCA_Insurance
+                                  ])
+
+
+# ----------- TEMP
+
+@allure.feature("Temporary Worker Feature")
+@allure.story("Add new temporary worker with asterisks data")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.regression
+@pytest.mark.sanity
+@pytest.mark.skip('NOT yet')
+def test_TemporaryWorkerAddAsterisksDat(driver):
+    loginwithSteps(driver)
+    with allure.step('Then User clicks "Temporary Worker" button on "Homepage" screen'):
+        find_byXpath(TemproryworkersMainLink_xpath, driver).click()
+
+    with allure.step('Then Scroll "Down" into view "Add New Temporary Worker" Section'):
+        scroll_into_element(AddNewWorker_xpath, driver)
+
+    verify_loaderAndWait(TableLoader_xpath, driver)
+    find_byXpathAndWait(sortTableByID_xpath, driver).click()
+    sleep(1)
+    find_byXpathAndWait(sortTableByID_xpath, driver).click()
+    NameXpath = TableRow_xpath(TW.FirstName + ' ' + TW.LastName)
+    assert find_byXpathAndGet_text(NameXpath, driver) == TW.FirstName + ' ' + TW.LastName
+    assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
+    sleep(10)
+
+
+# ------------
 
 
 @allure.feature("Temporary Worker Feature")

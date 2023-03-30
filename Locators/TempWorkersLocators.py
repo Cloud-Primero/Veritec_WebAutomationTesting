@@ -38,8 +38,9 @@ AssignProjectsList_xpath = '//label[@title="Assign Project"]/parent::div/parent:
 
 # Residence
 ResidenceHeading_xpath = '//h2[text()=" Residence "]'
-HouseYesCheckBox_xpath = '//h2[text()=" Residence "]/parent::div//input[@class="ant-radio-input" and @value="true"]'
-HouseNoCheckBox_xpath = '//h2[text()=" Residence "]/parent::div//input[@class="ant-radio-input" and @value="false"]'
+HouseCheckBox_xpath = lambda \
+        x: f'//h2[text()=" Residence "]/parent::div//input[@class="ant-radio-input" and @value="{x}"]'
+
 HouseNameInputSelect_xpath = '//input[@id="register_residence_id"]'
 HouseNameList_xpath = '//label[@title="House Name"]/parent::div/parent::div//div[' \
                       '@class="rc-virtual-list-holder-inner"]//div[@class="ant-select-item-option-content"]'
@@ -87,3 +88,14 @@ remarksTextareaInput_xpath = '//textarea[@id="remarksForm_remark"]'
 addRemarksBtn_xpath = '//button[text()=" Add Remark"]'
 AddTemporaryButton_xpath = '//button[text()=" Add Temporary Worker"]'
 TemporaryDataSave_SuccessMessage_xpath = '//span[text()="Temporary Worker Added Successfully"]'
+
+BACKButton_xpath = '//button[@class="back-button text-"]'
+# Table Xpath =
+
+# sort table
+TableLoader_xpath = '//span[@class="ant-spin-dot ant-spin-dot-spin"]'
+sortTableByID_xpath = '//th//span[@class="ant-table-column-title" and text()="ID"]/parent::div'
+
+TableRow_xpath = lambda x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[' \
+                           f'1]//td[@title="{x}"]'
+TextRow_xpath = lambda x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[1]//td[text()="{x}"]'

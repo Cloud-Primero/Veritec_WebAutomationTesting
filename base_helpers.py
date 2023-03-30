@@ -26,8 +26,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.opera import OperaDriverManager
 from selenium.webdriver.common.keys import Keys
+from Locators.TempWorkersLocators import TableRow_xpath, TextRow_xpath
 
 waitTimer = 15
+LoaderWaitTimer = 25
 
 
 def get_randomEmail():
@@ -45,6 +47,16 @@ def find_byXpath(xpath, driver):
         ele = driver.find_element(By.XPATH, xpath)
         print("Element Found with Xpath", xpath)
         return ele
+    except NoSuchElementException:
+        pytest.fail(
+            f"Couldn't find element with xpath : {xpath}")
+
+
+def find_byXpathAndGet_text(xpath, driver):
+    try:
+        ele = driver.find_element(By.XPATH, xpath)
+        print("Element Found with Xpath", xpath)
+        return ele.text
     except NoSuchElementException:
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
@@ -88,6 +100,11 @@ def find_Elements_byXpathAndWait(xpath, driver):
             f"Couldn't find element with xpath : {xpath}")
 
 
+def find_Elements_byXpathAndWait_getText(xpath, driver):
+    sleep(2)
+    return list((i.text for i in find_Elements_byXpathAndWait(xpath, driver)))
+
+
 def find_Elements_byXpath(xpath, driver):
     try:
         ele = driver.find_elements(By.XPATH, xpath)
@@ -118,6 +135,16 @@ def verify_visibility_of_element_located(xpath, driver):
             f"Element not visible with xpath : {xpath}")
 
 
+def verify_loaderAndWait(xpath, driver):
+    print('waiting for loader to disappear')
+    while True:
+        try:
+            driver.find_element(By.XPATH, xpath)
+        except NoSuchElementException:
+            break
+    print('loader disappeared')
+
+
 def verify_element_is_present(xpath, driver):
     try:
         find_byXpathAndWait(xpath, driver)
@@ -146,6 +173,32 @@ def scroll_into_element(xpath, driver):
     else:
         pytest.fail(
             f"Couldn't Scroll into element with xpath : {xpath}")
+
+
+# def verify_Data_TableCell(driver, xpathAtrr):
+#     NameXpath = TableRow_xpath(xpathAtrr)
+#     assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
+#     print(f'Date Found {xpathAtrr}')
+
+def replace_string(input_string):
+    if ", " in input_string:
+        return input_string.replace(", ", " (") + ")"
+    else:
+        return input_string
+
+
+def verify_Data_TableCell(driver, listxpathAtrr):
+    for xpathAtrr in listxpathAtrr:
+        NameXpath = TableRow_xpath(xpathAtrr)
+        assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
+        print(f'Date Found {xpathAtrr}')
+
+
+def verify_Data_TableCell_ByTextXpath(driver, listxpathAtrr):
+    for xpathAtrr in listxpathAtrr:
+        NameXpath = TextRow_xpath(xpathAtrr)
+        assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
+        print(f'Date Found {xpathAtrr}')
 
 # --------------------------------------
 
