@@ -1,9 +1,12 @@
-pytest~=7.2.2
+pytest
 allure-pytest
-selenium~=3.141.0
+selenium
 webdriver-manager
-pytest-failed-screenshot
 pytest-xdist
 pytest-order
 pytest-rerunfailures
-requests~=2.28.2
+requests
+certifi
+trio
+trio-websocket
+urllib3

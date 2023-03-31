@@ -193,7 +193,7 @@ def fillAndHandleRemarksInfo(driver):
 
 def saveAndVerifyIfInfoSaved(driver):
     with allure.step('Click Add Temporary Button to save information'):
-        find_byXpath(AddTemporaryButton_xpath, driver).click()
+        click_on_element_js(AddTemporaryButton_xpath, driver)
     with allure.step('Verify from Success popup-message'):
         verify_visibility_of_element_located(TemporaryDataSave_SuccessMessage_xpath, driver)
 

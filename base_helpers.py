@@ -200,6 +200,17 @@ def verify_Data_TableCell_ByTextXpath(driver, listxpathAtrr):
         assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
         print(f'Date Found {xpathAtrr}')
 
+
+def scroll_to_top_of_page(driver):
+    driver.execute_script(
+        "window.scrollTo(document.body.scrollHeight, 0)")
+
+
+def scroll_to_bottom_of_page(driver):
+    actions = ActionChains(driver)
+    actions.move_to_element(driver.find_element_by_tag_name('body')).click().perform()
+    actions.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL).perform()
+
 # --------------------------------------
 
 
@@ -351,15 +362,6 @@ def verify_Data_TableCell_ByTextXpath(driver, listxpathAtrr):
 #             self.driver.switch_to.window(tab)
 #             if self.driver.title == title or title in self.driver.title:
 #                 break
-
-
-# def scroll_to_top_of_page(self):
-#     self.driver.execute_script(
-#         "window.scrollTo(document.body.scrollHeight, 0)")
-
-
-# def scroll_to_bottom_of_page(self):
-#     self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
 
 
 # def open_tab(self):

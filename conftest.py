@@ -5,6 +5,7 @@ from base_helpers import *
 import os
 from base_helpers import get_randomEmail
 
+
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
@@ -29,7 +30,7 @@ class TemoraryWorkerDataClass:
     Nationality = 'Pakistani'
     PhoneCountry = 'Pakistan'
     PhoneNumber = '3058440922'
-    Address = 'Chandigarh road mia wali khairpur karachi Sindh'
+    Address = 'Chandigarh road mia wali AirPush karachi Sindhi'
     Email = get_randomEmail()
     EmployeeType = 'Temporary Worker'
     Client = None
@@ -96,9 +97,9 @@ def driver(request):
         firefox_options.add_argument("start-maximized")
         firefox_options.set_preference(
             'permissions.default.desktop-notification', 1)
-        # driver = webdriver.Firefox(service=Firefox_service(
-        #     GeckoDriverManager().install()), options=firefox_options)
-        driver = webdriver.Firefox(GeckoDriverManager().install(), options=firefox_options)
+        driver = webdriver.Firefox(service=Firefox_service(
+            GeckoDriverManager().install()), options=firefox_options)
+        # driver = webdriver.Firefox(GeckoDriverManager().install(), options=firefox_options)
 
     elif BROWSER == "OPERA":
         pass
@@ -115,6 +116,28 @@ def driver(request):
     # sleep(180)
     driver.close()
     driver.quit()
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    if rep.when == 'call' and rep.failed:
+        mode = 'a' if os.path.exists('failures') else 'w'
+        try:
+            with open('failures', mode) as f:
+                if 'driver' in item.fixturenames:
+                    driver = item.funcargs['driver']
+                else:
+                    print('Fail to take screen-shot')
+                    return
+            allure.attach(
+                driver.get_screenshot_as_png(),
+                name='screenshot',
+                attachment_type=allure.attachment_type.PNG
+            )
+        except Exception as e:
+            print('Fail to take screen-shot: {}'.format(e))
 
 # pytest Tests --alluredir=reports --screenshot=on --browser CHROME  -v -s --headless 0
 # parallel test execution with 2 retry on failure
