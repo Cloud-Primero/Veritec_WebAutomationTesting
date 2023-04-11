@@ -139,6 +139,8 @@ def pytest_runtest_makereport(item, call):
         except Exception as e:
             print('Fail to take screen-shot: {}'.format(e))
 
+#  pytest --alluredir=reports  --browser CHROME --headless 0 -n 4 --reruns 2
+
 # pytest Tests --alluredir=reports --screenshot=on --browser CHROME  -v -s --headless 0
 # parallel test execution with 2 retry on failure
 # Pytest Tests  --alluredir=reports --screenshot=on --browser CHROME  --headless 0 -n 10 --reruns 2

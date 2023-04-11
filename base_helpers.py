@@ -135,6 +135,14 @@ def verify_visibility_of_element_located(xpath, driver):
             f"Element not visible with xpath : {xpath}")
 
 
+def verify_elementIsClickAble(xpath, driver):
+    try:
+        WebDriverWait(driver, waitTimer).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+    except ElementNotVisibleException:
+        pytest.fail(
+            f"Element not visible with xpath : {xpath}")
+
+
 def verify_loaderAndWait(xpath, driver):
     print('waiting for loader to disappear')
     while True:

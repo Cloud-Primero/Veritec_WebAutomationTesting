@@ -311,14 +311,30 @@ def test_TemporaryWorkerDeleteFirst(driver):
 
 @allure.feature("Temporary Worker Feature")
 @allure.story("Check All Necessary Buttons Visible")
-@allure.severity(allure.severity_level.NORMAL)
+@allure.severity(allure.severity_level.MINOR)
 @pytest.mark.regression
 @pytest.mark.sanity
-def test_TemporaryWorkerDeleteFirst(driver):
+def test_TemporaryWorkerCheckNecessaryButtonsVisible(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
     with allure.step('And Check if All Necessary Buttons are visible'):
-        verify_visibility_of_element_located(mainDeleteButton,driver)
+        verify_visibility_of_element_located(mainDeleteButton, driver)
         verify_visibility_of_element_located(mainEditButton, driver)
         verify_visibility_of_element_located(mainShowHideButton, driver)
         verify_visibility_of_element_located(mainExportButton, driver)
         verify_visibility_of_element_located(mainFilterButton, driver)
+
+
+@allure.feature("Temporary Worker Feature")
+@allure.story("Check All Necessary Buttons Clickable")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_TemporaryWorkerCheckNecessaryButtonsClickAble(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    with allure.step('And Check if All Necessary Buttons are Clickable'):
+        verify_elementIsClickAble(mainDeleteButton, driver)
+        verify_elementIsClickAble(mainEditButton, driver)
+        verify_elementIsClickAble(mainShowHideButton, driver)
+        verify_elementIsClickAble(mainExportButton, driver)
+        verify_elementIsClickAble(mainFilterButton, driver)
+
