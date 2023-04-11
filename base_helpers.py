@@ -1,3 +1,5 @@
+import os.path
+
 import allure
 import pytest
 from time import sleep
@@ -78,7 +80,7 @@ def find_byXpathAndWait(xpath, driver):
         print("Element Found with Xpath", xpath)
         return ele
 
-    except NoSuchElementException:
+    except (NoSuchElementException, TimeoutException):
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
 
@@ -95,7 +97,7 @@ def find_Elements_byXpathAndWait(xpath, driver):
         print("Elements Found with Xpath", xpath)
         return ele
 
-    except NoSuchElementException:
+    except (NoSuchElementException, TimeoutException):
         pytest.fail(
             f"Couldn't find element with xpath : {xpath}")
 
@@ -129,8 +131,8 @@ def visitUrl(url, driver):
 
 def verify_visibility_of_element_located(xpath, driver):
     try:
-        WebDriverWait(driver, waitTimer).until(EC.visibility_of_element_located((By.XPATH, xpath)))
-    except ElementNotVisibleException:
+        WebDriverWait(driver, waitTimer).until(EC.element_to_be_clickable((By.XPATH, xpath)))
+    except (ElementNotVisibleException, TimeoutException):
         pytest.fail(
             f"Element not visible with xpath : {xpath}")
 
@@ -138,7 +140,7 @@ def verify_visibility_of_element_located(xpath, driver):
 def verify_elementIsClickAble(xpath, driver):
     try:
         WebDriverWait(driver, waitTimer).until(EC.element_to_be_clickable((By.XPATH, xpath)))
-    except ElementNotVisibleException:
+    except (ElementNotInteractableException, TimeoutException):
         pytest.fail(
             f"Element not visible with xpath : {xpath}")
 
@@ -218,6 +220,10 @@ def scroll_to_bottom_of_page(driver):
     actions = ActionChains(driver)
     actions.move_to_element(driver.find_element_by_tag_name('body')).click().perform()
     actions.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL).perform()
+
+
+def verifyFileDownloadedCorrectly(FilePath):
+    assert os.path.exists(FilePath)
 
 # --------------------------------------
 

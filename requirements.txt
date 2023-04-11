@@ -10,3 +10,4 @@ certifi
 trio
 trio-websocket
 urllib3
+flaky

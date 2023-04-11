@@ -6,6 +6,12 @@ import os
 from base_helpers import get_randomEmail
 
 
+def pytest_configure(config):
+    config.addinivalue_line("markers", "regression: mark test as a regression test")
+    config.addinivalue_line("markers", "smoke: mark test as a smoke test")
+    config.addinivalue_line("markers", "sanity: mark test as a sanity test")
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--browser",
@@ -51,6 +57,7 @@ class TemoraryWorkerDataClass:
 
 class Storage:
     baseUrl = 'http://52.70.226.96:85'
+    downloadsPath = os.getcwd() + '/Downloads/'
     temporaryWorkerData = TemoraryWorkerDataClass()
     temporaryWorkerUrlAdd = 'http://52.70.226.96:85/temporary-worker/add'
     temporaryWorkerUrl = 'http://52.70.226.96:85/temporary-worker'
@@ -69,6 +76,13 @@ class Storage:
 
 @pytest.fixture(scope='function')
 def driver(request):
+    print("CURRENTWORKINGDIRECTORY :", os.getcwd())
+    downloadsPath = os.getcwd() + '/Downloads/'
+    if os.path.exists(downloadsPath):
+        print("Path Exists : ", downloadsPath)
+    else:
+        print("Path Doesn't Exists:", downloadsPath)
+    print("FileDownloadDIRECTORY : ", downloadsPath)
     print(request.config.option.browser)
     BROWSER = request.config.option.browser
     driver = None
@@ -84,14 +98,24 @@ def driver(request):
         chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument("start-maximized")
         chrome_options.add_experimental_option("prefs", {
-            "profile.default_content_setting_values.notifications": 1
+            "profile.default_content_setting_values.notifications": 1,
+            "download.default_directory": downloadsPath,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True
         })
 
         driver = webdriver.Chrome(
-            ChromeDriverManager().install(), options=chrome_options)
+            ChromeDriverManager().install(), chrome_options=chrome_options, )
 
     elif BROWSER == "FIREFOX":
         firefox_options = Firefox_options()
+        # setup for downloadable files
+        firefox_options.set_preference("browser.download.folderList", 2)
+        firefox_options.set_preference("browser.download.manager.showWhenStarting", False)
+        firefox_options.set_preference("browser.download.dir", downloadsPath)
+        firefox_options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
+
         firefox_options.add_argument(headless)
         firefox_options.add_argument('--log-level=3')
         firefox_options.add_argument("start-maximized")
@@ -116,6 +140,23 @@ def driver(request):
     # sleep(180)
     driver.close()
     driver.quit()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def clearDownloads():
+    yield
+    # Will be executed after the last test
+    downloadsPath = os.getcwd() + '/Downloads/'
+    files = os.listdir(downloadsPath)
+    # deleting all files in the downloads folder
+    for file_name in files:
+        file_path = os.path.join(downloadsPath, file_name)
+        try:
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                print(f"Deleted {file_path}")
+        except Exception as e:
+            print(f"Error deleting {file_path}: {e}")
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)

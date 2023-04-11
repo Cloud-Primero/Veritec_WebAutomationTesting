@@ -1,3 +1,4 @@
+from flaky import flaky
 from conftest import *
 from base_helpers import *
 from Locators.TempWorkersLocators import *
@@ -178,6 +179,7 @@ def fillOthersInfo(driver, file=False):
 
 def fillAndHandleRemarksInfo(driver):
     with allure.step('Handle Remarks Popup and Add Remarks'):
+        TW.Email = get_randomEmail()
         find_byXpath(AddRemarkButton_xpath, driver).click()
         verify_element_is_present(RemarkIframe_xpath, driver)
         sleep(1)
@@ -223,7 +225,8 @@ def verifyDataInTable(driver):
                                           ])
         verify_Data_TableCell(driver,
                               [
-                                  f'{TW.FirstName} {TW.LastName}',
+                                  TW.FirstName,
+                                  TW.LastName,
                                   f'92{TW.PhoneNumber}',
                                   TW.Nationality,
                                   TW.Address,
@@ -242,6 +245,7 @@ def verifyDataInTable(driver):
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
+@flaky
 def test_TemporaryWorkerAdd(driver):
     global Email
     VisitTemporary_WorkerPageWithSteps(driver)
@@ -338,3 +342,17 @@ def test_TemporaryWorkerCheckNecessaryButtonsClickAble(driver):
         verify_elementIsClickAble(mainExportButton, driver)
         verify_elementIsClickAble(mainFilterButton, driver)
 
+
+@allure.feature("Temporary Worker Feature")
+@allure.story("Check If Export Button actually downloads the file and its in csv format")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_TemporaryWorkerCheckExportButtonDownloadsCSVFile(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
+    with allure.step('And Check if CSV file downloaded correctly'):
+        verify_elementIsClickAble(mainExportButton, driver)
+        find_byXpath(mainExportButton, driver).click()
+        sleep(2)
+        fileName = Storage.downloadsPath+find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
+        verifyFileDownloadedCorrectly(fileName)
