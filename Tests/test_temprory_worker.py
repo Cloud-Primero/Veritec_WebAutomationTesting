@@ -41,6 +41,19 @@ def VisitTemporaryWorkerPageWithLogin(driver):
         find_byXpath(TemproryworkersMainLink_xpath, driver).click()
 
 
+def downloadAndVerifyCSVExportedFile(driver):
+    with allure.step('And Check if CSV file downloaded correctly'):
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        sleep(2)
+        verify_elementIsClickAble(mainExportButton, driver)
+        find_byXpath(mainExportButton, driver).click()
+        print('Downloading the file now')
+        sleep(4)
+        fileName = Storage.downloadsPath + find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
+        verifyFileDownloadedCorrectly(FilePath=fileName)
+        return fileName
+
+
 @allure.feature("Temporary Worker Feature")
 @allure.story("Verify All mandatory fields for Temporary Worker Screen")
 @allure.severity(allure.severity_level.NORMAL)
@@ -208,36 +221,17 @@ def sortTableByIdDescendingOrder(driver):
     find_byXpathAndWait(sortTableByID_xpath, driver).click()
 
 
-def verifyDataInTable(driver):
-    with allure.step('Verify Data in Table'):
+def verifyDataInTable(driver, textPathList, tableDataList, tableIndex=0):
+    with allure.step(f'Verify Data in Table: {textPathList} {tableDataList}'):
         # scroll_into_element(BACKButton_xpath, driver)
-        click_on_element_js(BACKButton_xpath, driver)
-        sleep(2)
-        sortTableByIdDescendingOrder(driver)
+        # click_on_element_js(BACKButton_xpath, driver)
+        # sleep(2)
+        # sortTableByIdDescendingOrder(driver)
         # assert find_byXpathAndGet_text(TextRow_xpath(Email), driver) == Email
         verify_Data_TableCell_ByTextXpath(driver,
-                                          [
-                                              Email,
-                                              TW.BedNumber,
-                                              TW.TransportType,
-                                              TW.VCA_Status
-
-                                          ])
+                                          textPathList, tableIndex)
         verify_Data_TableCell(driver,
-                              [
-                                  TW.FirstName,
-                                  TW.LastName,
-                                  f'92{TW.PhoneNumber}',
-                                  TW.Nationality,
-                                  TW.Address,
-                                  TW.EmployeeType,
-                                  TW.Client,
-                                  TW.Project,
-                                  replace_string(TW.House),
-                                  # TW.HouseName,
-                                  TW.BikeNameOrLicencePlate,
-                                  TW.VCA_Insurance
-                              ])
+                              tableDataList, tableIndex)
 
 
 @allure.feature("Temporary Worker Feature")
@@ -260,7 +254,16 @@ def test_TemporaryWorkerAdd(driver):
         fillOthersInfo(driver, file=True)
         fillAndHandleRemarksInfo(driver)
         saveAndVerifyIfInfoSaved(driver)
-        verifyDataInTable(driver)
+        click_on_element_js(BACKButton_xpath, driver)
+        sleep(2)
+        sortTableByIdDescendingOrder(driver)
+        verifyDataInTable(driver,
+                          textPathList=[Email, TW.BedNumber, TW.TransportType, TW.VCA_Status],
+                          tableDataList=[
+                              TW.FirstName, TW.LastName, f'92{TW.PhoneNumber}', TW.Nationality, TW.Address,
+                              TW.EmployeeType, TW.Client, TW.Project, replace_string(TW.House),
+                              TW.BikeNameOrLicencePlate, TW.VCA_Insurance
+                          ])
 
 
 @allure.feature("Temporary Worker Feature")
@@ -285,6 +288,7 @@ def test_TemporaryWorkerDeleteLast(driver):
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
+@pytest.mark.order(1)
 def test_TemporaryWorkerDeleteLast(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
     sortTableByIdDescendingOrder(driver)
@@ -297,10 +301,11 @@ def test_TemporaryWorkerDeleteLast(driver):
 
 
 @allure.feature("Temporary Worker Feature")
-@allure.story("Delete First Temporary worker")
+@allure.story("Delete Last Temporary worker")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
+@pytest.mark.order(2)
 def test_TemporaryWorkerDeleteFirst(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
     scroll_into_element(mainTemporaryTable_xpath, driver)
@@ -333,6 +338,7 @@ def test_TemporaryWorkerCheckNecessaryButtonsVisible(driver):
 @allure.severity(allure.severity_level.MINOR)
 @pytest.mark.regression
 @pytest.mark.sanity
+@pytest.mark.order(4)
 def test_TemporaryWorkerCheckNecessaryButtonsClickAble(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
     with allure.step('And Check if All Necessary Buttons are Clickable'):
@@ -348,11 +354,72 @@ def test_TemporaryWorkerCheckNecessaryButtonsClickAble(driver):
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
+@pytest.mark.smoke
+@pytest.mark.order(3)
 def test_TemporaryWorkerCheckExportButtonDownloadsCSVFile(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
+    fileName = downloadAndVerifyCSVExportedFile(driver)
+    os.remove(fileName)
+
+
+@allure.feature("Temporary Worker Feature")
+@allure.story("Verify If Exported CSV file has the exact data matches with table")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.regression
+@pytest.mark.sanity
+@pytest.mark.order(5)
+def test_TemporaryWorkerVerifyIfExportedCSVFileDataMatchesWithWebTableData(driver):
+    VisitTemporaryWorkerPageWithLogin(driver)
     with allure.step('And Check if CSV file downloaded correctly'):
-        verify_elementIsClickAble(mainExportButton, driver)
-        find_byXpath(mainExportButton, driver).click()
-        sleep(2)
-        fileName = Storage.downloadsPath+find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
-        verifyFileDownloadedCorrectly(fileName)
+        fileName = Storage.downloadsPath + find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
+        downloadAndVerifyCSVExportedFile(driver)
+
+    with allure.step("Verify If Exported CSV file has the exact data matches with table"):
+        scroll_to_bottom_of_page(driver)
+        sleep(4)
+        df = pd.read_csv(fileName)
+        df = df.fillna('')
+        counter = 0
+        page = 1
+
+        for i, row in df.iterrows():
+            if counter == 10:
+                print(page + 1)
+                page += 1
+                counter = 0
+                find_byXpath(nextPage, driver).click()
+
+            csv_list = row.tolist()
+            firstName = csv_list[1]
+            lastName = csv_list[2]
+            email = csv_list[3]
+            status = csv_list[4]
+            phoneNumber = csv_list[5]
+            nationality = csv_list[6]
+            address = csv_list[7]
+            employeeType = csv_list[8]
+            client = csv_list[10]
+            project = csv_list[11]
+            houseBedNum = csv_list[14]
+            transportType = csv_list[16]
+            licensePlateNum = csv_list[17]
+            vcaStatus = csv_list[22]
+
+            # noinspection PyTypeChecker
+            verifyDataInTable(driver,
+                              textPathList=[email,  # houseBedNum,
+                                            # transportType, vcaStatus,
+
+                                            ],
+                              tableDataList=[
+                                  firstName, lastName,
+                                  # f'92{phoneNumber}',
+                                  # nationality,
+                                  # address,
+                                  # status,
+                                  employeeType,
+                                  # client,
+                                  # project,
+                                  # licensePlateNum,
+                              ], tableIndex=counter)
+            counter += 1

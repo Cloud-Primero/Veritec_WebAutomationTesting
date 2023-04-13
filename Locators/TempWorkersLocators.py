@@ -96,11 +96,13 @@ BACKButton_xpath = '//button[@class="back-button text-"]'
 TableLoader_xpath = '//span[@class="ant-spin-dot ant-spin-dot-spin"]'
 sortTableByID_xpath = '//th//span[@class="ant-table-column-title" and text()="ID"]/parent::div'
 
-TableRow_xpath = lambda x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[' \
-                           f'1]//td[@title="{x}"]'
-TextRow_xpath = lambda \
-        x: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[1]//td[text()="{x}"]'
+TableRow_xpath = lambda title, index=0: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ' \
+                                        f'ant-table-row-level-0"])[{index + 1}]//td[@title="{title}"]'
+TextRow_xpath = lambda text,index=0: f'(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ' \
+                                     f'ant-table-row-level-0"])[{index+1}]' \
+                     f'//td[text()="{text}"]'
 
+nextPage = '//li[@title="Next Page"]'
 # MainPage Elements
 mainTemporaryTable_xpath = '//table'
 mainRowRadioButton = '(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-table-row-level-0"])[' \
@@ -120,4 +122,3 @@ AssignProjectBtn_xpath = '//div[text()="Workers without Project"]/parent::div/pa
 AssignBedBtn_xpath = '//div[text()="Workers without Bed"]/parent::div/parent::div//button'
 AssignTransportBtn_xpath = '//div[text()="Workers without Transport"]/parent::div/parent::div//button'
 AssignInsuranceBtn_xpath = '//div[text()="Workers without Insurance"]/parent::div/parent::div//button'
-

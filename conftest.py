@@ -88,7 +88,7 @@ def driver(request):
     driver = None
 
     if request.config.option.headless == "1":
-        headless = "--headless"
+        headless = "--headless=new"
     else:
         headless = "headfull"
 
@@ -102,11 +102,24 @@ def driver(request):
             "download.default_directory": downloadsPath,
             "download.prompt_for_download": False,
             "download.directory_upgrade": True,
-            "safebrowsing.enabled": True
+            "safebrowsing_for_trusted_sources_enabled": False,
+            "safebrowsing.enabled": False,
+            'behavior': 'allow'
         })
+        # chrome_options.add_argument("--no-sandbox")
+        # chrome_options.add_argument("--disable-dev-shm-usage")
+        # chrome_options.add_argument("--headless=new")
+        # chrome_options.add_argument("window-size=1920,1080")
+        # chrome_options.add_experimental_option("prefs", {
+        #     "download.default_directory": downloadsPath,
+        #     "download.prompt_for_download": False,
+        #     "download.directory_upgrade": True,
+        #     "safebrowsing.enabled": True,
+        #     "DOWNLOADS_PATH": downloadsPath
+        # })
 
         driver = webdriver.Chrome(
-            ChromeDriverManager().install(), chrome_options=chrome_options, )
+            ChromeDriverManager().install(), chrome_options=chrome_options)
 
     elif BROWSER == "FIREFOX":
         firefox_options = Firefox_options()
@@ -142,21 +155,21 @@ def driver(request):
     driver.quit()
 
 
-@pytest.fixture(scope='session', autouse=True)
-def clearDownloads():
-    yield
-    # Will be executed after the last test
-    downloadsPath = os.getcwd() + '/Downloads/'
-    files = os.listdir(downloadsPath)
-    # deleting all files in the downloads folder
-    for file_name in files:
-        file_path = os.path.join(downloadsPath, file_name)
-        try:
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-                print(f"Deleted {file_path}")
-        except Exception as e:
-            print(f"Error deleting {file_path}: {e}")
+# @pytest.fixture(scope='session', autouse=True)
+# def clearDownloads():
+#     yield
+#     # Will be executed after the last test
+#     downloadsPath = os.getcwd() + '/Downloads/'
+#     files = os.listdir(downloadsPath)
+#     # deleting all files in the downloads folder
+#     for file_name in files:
+#         file_path = os.path.join(downloadsPath, file_name)
+#         try:
+#             if os.path.isfile(file_path):
+#                 os.remove(file_path)
+#                 print(f"Deleted {file_path}")
+#         except Exception as e:
+#             print(f"Error deleting {file_path}: {e}")
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)

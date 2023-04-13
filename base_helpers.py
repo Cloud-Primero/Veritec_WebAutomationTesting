@@ -1,5 +1,5 @@
 import os.path
-
+import pandas as pd
 import allure
 import pytest
 from time import sleep
@@ -197,18 +197,19 @@ def replace_string(input_string):
         return input_string
 
 
-def verify_Data_TableCell(driver, listxpathAtrr):
+def verify_Data_TableCell(driver, listxpathAtrr, tableIndex=0):
     for xpathAtrr in listxpathAtrr:
-        NameXpath = TableRow_xpath(xpathAtrr)
+        NameXpath = TableRow_xpath(xpathAtrr, tableIndex)
+        print(NameXpath)
         assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
-        print(f'Date Found {xpathAtrr}')
+        print(f'Data Found {xpathAtrr}')
 
 
-def verify_Data_TableCell_ByTextXpath(driver, listxpathAtrr):
+def verify_Data_TableCell_ByTextXpath(driver, listxpathAtrr, tableIndex=0):
     for xpathAtrr in listxpathAtrr:
-        NameXpath = TextRow_xpath(xpathAtrr)
+        NameXpath = TextRow_xpath(xpathAtrr, tableIndex)
         assert find_byXpathAndGet_text(NameXpath, driver) == xpathAtrr
-        print(f'Date Found {xpathAtrr}')
+        print(f'Data Found {xpathAtrr}')
 
 
 def scroll_to_top_of_page(driver):
@@ -218,7 +219,7 @@ def scroll_to_top_of_page(driver):
 
 def scroll_to_bottom_of_page(driver):
     actions = ActionChains(driver)
-    actions.move_to_element(driver.find_element_by_tag_name('body')).click().perform()
+    actions.move_to_element(driver.find_element(By.TAG_NAME, 'body')).click().perform()
     actions.key_down(Keys.CONTROL).send_keys(Keys.END).key_up(Keys.CONTROL).perform()
 
 
