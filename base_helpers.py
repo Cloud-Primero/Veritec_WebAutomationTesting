@@ -103,8 +103,11 @@ def find_Elements_byXpathAndWait(xpath, driver):
 
 
 def find_Elements_byXpathAndWait_getText(xpath, driver):
-    sleep(2)
     return list((i.text for i in find_Elements_byXpathAndWait(xpath, driver)))
+
+
+def find_Elements_byXpathAnd_getText(xpath, driver):
+    return list((i.text for i in find_Elements_byXpath(xpath, driver)))
 
 
 def find_Elements_byXpath(xpath, driver):
