@@ -234,15 +234,6 @@ def verifyDataInTable(driver, textPathList, tableDataList, tableIndex=0):
                               tableDataList, tableIndex)
 
 
-def verifyDatainTableByRow(driver, rowData, rowIndex=0):
-    with allure.step(f'Verify Data in Table: {rowData}'):
-        webData = find_Elements_byXpathAnd_getText(driver=driver, xpath=tableRowData_xpath(rowIndex))
-        # print(rowData)
-        # print("-------------")
-        # print(webData)
-        # assert rowData == webData
-
-
 @allure.feature("Temporary Worker Feature")
 @allure.story("Add new temporary worker")
 @allure.severity(allure.severity_level.NORMAL)
@@ -379,9 +370,9 @@ def test_TemporaryWorkerCheckExportButtonDownloadsCSVFile(driver):
 @pytest.mark.order(5)
 def test_TemporaryWorkerVerifyIfExportedCSVFileDataMatchesWithWebTableData(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
-    with allure.step('And Check if CSV file downloaded correctly'):
-        fileName = Storage.downloadsPath + find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
-        downloadAndVerifyCSVExportedFile(driver)
+
+    fileName = Storage.downloadsPath + find_byXpath(csvFileEXPORTNAME, driver).get_attribute("download") + '.csv'
+    downloadAndVerifyCSVExportedFile(driver)
 
     with allure.step("Verify If Exported CSV file has the exact data matches with table"):
         scroll_to_bottom_of_page(driver)
@@ -398,7 +389,7 @@ def test_TemporaryWorkerVerifyIfExportedCSVFileDataMatchesWithWebTableData(drive
 
         for i, row in df.iterrows():
             if counter == 10:
-                print(page + 1)
+                print(f'Page : {page + 1}')
                 page += 1
                 counter = 0
                 find_byXpath(nextPage, driver).click()
