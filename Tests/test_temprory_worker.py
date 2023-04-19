@@ -354,7 +354,7 @@ def test_TemporaryWorkerCheckNecessaryButtonsClickAble(driver):
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.regression
 @pytest.mark.sanity
-@pytest.mark.smoke
+# @pytest.mark.smoke
 @pytest.mark.order(3)
 def test_TemporaryWorkerCheckExportButtonDownloadsCSVFile(driver):
     VisitTemporaryWorkerPageWithLogin(driver)
