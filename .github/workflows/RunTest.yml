@@ -20,7 +20,7 @@ jobs:
         run: pip install -r requirements.txt
       
       - name: Running Selenium Tests
-        run:  pytest --alluredir=allure-report --browser CHROME --headless 1 -v -s
+        run:  pytest --alluredir=allure-report --browser CHROME --headless 1 -v -s -m smoke
       
 
       - name: Generate Allure Report
