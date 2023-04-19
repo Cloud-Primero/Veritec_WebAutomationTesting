@@ -27,8 +27,10 @@ jobs:
 
       
       - name: Running Selenium Tests
-        run:  pytest --alluredir=allure-report --browser CHROME --headless 1 -v -s -m smoke
+        run:  pytest --alluredir=allure-results --browser CHROME --headless 1 -v -s -m smoke
         continue-on-error: true
 
       - name: Allure Report with history
         uses: simple-elf/allure-report-action@v1.6
+      
+     
