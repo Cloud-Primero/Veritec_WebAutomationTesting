@@ -19,6 +19,13 @@ jobs:
       - name: Install dependencies from Requirements.txt
         run: pip install -r requirements.txt
       
+      - name: Install Allure CLI
+        run: |
+          wget https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.14.0/allure-commandline-2.14.0.zip -O allure.zip
+          unzip -o allure.zip -d allure
+          export PATH="$PATH:$(pwd)/allure/bin"
+
+      
       - name: Running Selenium Tests
         run:  pytest --alluredir=allure-report --browser CHROME --headless 1 -v -s -m smoke
         continue-on-error: true
