@@ -96,7 +96,7 @@ def driver(request):
         chrome_options = Chrome_options()
         chrome_options.add_argument(headless)
         chrome_options.add_argument('--log-level=3')
-        chrome_options.add_argument("start-maximized")
+        chrome_options.add_argument("--start-maximized")
         chrome_options.add_experimental_option("prefs", {
             "profile.default_content_setting_values.notifications": 1,
             "download.default_directory": downloadsPath,
@@ -148,7 +148,7 @@ def driver(request):
                     reason="Please provide a browser name to initiate tests")
 
     driver.implicitly_wait(7)
-    driver.maximize_window()
+    driver.set_window_size(1920, 1080)
     yield driver
     # sleep(180)
     driver.close()

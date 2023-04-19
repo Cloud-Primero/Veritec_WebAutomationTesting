@@ -1,6 +1,7 @@
 from Locators.TempWorkersLocators import csvFileEXPORTNAME, nextPage, mainShowHideButton, mainExportButton, \
-    mainFilterButton
-from Tests.test_temprory_worker import downloadAndVerifyCSVExportedFile
+    mainFilterButton, mainRowRadioButton, mainDeleteButton, mainDeleteYesButton, \
+    mainTemporaryDelete_SuccessMessage_xpath, TableLoader_xpath
+from Tests.test_temprory_worker import downloadAndVerifyCSVExportedFile, sortTableByIdDescendingOrder
 from conftest import *
 from base_helpers import *
 from Locators.UsersLocators import *
@@ -16,6 +17,7 @@ def test_UsersScreenNavigation(driver):
     loginwithSteps(driver)
     UsersUrl = 'active-user'
     with allure.step('Then User clicks "Users" button on "Homepage" screen'):
+        scroll_into_element(UsersMainLink_xpath,driver)
         find_byXpath(UsersMainLink_xpath, driver).click()
     with allure.step('And User Should see "active-user" in the url'):
         assert UsersUrl in driver.current_url
@@ -124,3 +126,70 @@ def test_UserCheckNecessaryButtonsVisible(driver):
         verify_visibility_of_element_located(mainShowHideButton, driver)
         verify_visibility_of_element_located(mainExportButton, driver)
         verify_visibility_of_element_located(mainFilterButton, driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Delete Last User And Verify Message")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_UserDeleteLastAndVerify(driver):
+    VisitUsersPageWithLogin(driver)
+    with allure.step('When User Tap on ID on table to sort it by descending order'):
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        sortTableByIdDescendingOrder(driver)
+    with allure.step('And User select the last Item and Tap on Delete Button'):
+        find_byXpath(deleteUser_xpath, driver).click()
+        # find_byXpathAndWait(mainDeleteButton, driver).click()
+        find_byXpathAndWait(mainDeleteYesButton, driver).click()
+    with allure.step('Then User should see a "User Deleted Successfully" message'):
+        verify_visibility_of_element_located(userDeletedMessage, driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Delete First User And Verify Message")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_UserDeleteFirstAndVerify(driver):
+    VisitUsersPageWithLogin(driver)
+    with allure.step('And User select the last Item and Tap on Delete Button'):
+        verify_loaderAndWait(TableLoader_xpath,driver)
+        find_byXpathAndWait(deleteUser_xpath, driver).click()
+        find_byXpathAndWait(mainDeleteYesButton, driver).click()
+    with allure.step('Then User should see a "User Deleted Successfully" message'):
+        verify_visibility_of_element_located(userDeletedMessage, driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Click on Edit User Button And Verify Mandatory FormFields are present")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_verifyEditFormFieldsArePresent(driver):
+    VisitUsersPageWithLogin(driver)
+    with allure.step('And User Click on Edit Button'):
+        find_byXpathAndWait(userEditBtn_xpath, driver).click()
+    with allure.step('Then User should see a Form containing mandatory fields'):
+        verify_visibility_of_element_located(firstNameInput, driver)
+        verify_visibility_of_element_located(lastNameInput, driver)
+        verify_visibility_of_element_located(phoneNumberInput, driver)
+        verify_visibility_of_element_located(saveChangesButton, driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Click on Edit User Button And Click On Save Changes button without even changing anything")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_verifyEditFormShowingChangesSavedSuccessWhenSubmittingFormWithoutChanges(driver):
+    VisitUsersPageWithLogin(driver)
+    with allure.step('And User Click on Edit Button'):
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        find_byXpathAndWait(userEditBtn_xpath, driver).click()
+    with allure.step('Then Click On Save Changes button without even changing anything"'):
+        find_byXpathAndWait(saveChangesButton, driver).click()
+    with allure.step('And User Should see an error "Invalid User"'):
+        verify_visibility_of_element_located(invalidUserMessage,driver)
+
+

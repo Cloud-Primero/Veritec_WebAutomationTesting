@@ -70,7 +70,7 @@ def test_TemporaryWorkerMandatoryFields(driver):
         verify_element_is_present(Select_Nationality_xpath, driver)
         verify_element_is_present(PhoneNumberInput_xpath, driver)
         verify_element_is_present(PhoneNumber_CountryFlagIcon_xpath, driver)
-        verify_element_is_present(address_xpath, driver)
+        # verify_element_is_present(address_xpath, driver)
         verify_element_is_present(email_xpath, driver)
         # Employee Status
         verify_element_is_present(EmployeeStatusHeading_xpath, driver)
@@ -117,7 +117,7 @@ def fillUserPersonalData(driver):
         find_byXpath(PhoneNumberCountryNameClick(TW.PhoneCountry), driver).click()
         find_byXpath(PhoneNumberInput_xpath, driver).click()
         find_byXpath(PhoneNumberInput_xpath, driver).send_keys(TW.PhoneNumber)
-        find_byXpath(address_xpath, driver).send_keys(TW.Address)
+        # find_byXpath(address_xpath, driver).send_keys(TW.Address)
 
         find_byXpath(email_xpath, driver).send_keys(Email)
         scroll_into_element(email_xpath, driver)
@@ -402,30 +402,32 @@ def test_TemporaryWorkerVerifyIfExportedCSVFileDataMatchesWithWebTableData(drive
             status = csv_list[4]
             phoneNumber = csv_list[5]
             nationality = csv_list[6]
-            address = csv_list[7]
-            employeeType = csv_list[8]
-            contractType = csv_list[9]
-            client = csv_list[10]
-            project = csv_list[11]
-            house = csv_list[12]
-            houseName = csv_list[13]
-            houseBed = csv_list[14]
-            transport = csv_list[15]
-            transportType = csv_list[16]
-            licensePlateNumber = csv_list[17]
-            seatNumber = csv_list[18]
-            ddriver = csv_list[19]
-            licenseEndDate = csv_list[20]
-            vca = csv_list[21]
-            vcaStatus = csv_list[22]
-            vcaValidUntil = csv_list[23]
-            insurance = csv_list[24]
-            statusReason = csv_list[25]
+            #address = csv_list[7]
+            employeeType = csv_list[7]
+            contractType = csv_list[8]
+            client = csv_list[9]
+            project = csv_list[10]
+            house = csv_list[11]
+            houseName = csv_list[12]
+            houseBed = csv_list[13]
+            transport = csv_list[14]
+            transportType = csv_list[15]
+            licensePlateNumber = csv_list[16]
+            seatNumber = csv_list[17]
+            ddriver = csv_list[18]
+            licenseEndDate = csv_list[19]
+            vca = csv_list[20]
+            vcaStatus = csv_list[21]
+            vcaValidUntil = csv_list[22]
+            insurance = csv_list[23]
+            statusReason = csv_list[24]
 
-            listOfData = [ID, firstName, lastName, email, status, phoneNumber, nationality, address, employeeType,
+            listOfData = [ID, firstName, lastName, email, status, phoneNumber, nationality, employeeType,
                           contractType, client, project, house, houseName, houseBed, transport, transportType,
                           licensePlateNumber, seatNumber, ddriver, licenseEndDate, vca, vcaStatus, vcaValidUntil,
                           insurance, statusReason]
             # noinspection PyTypeChecker
             verifyDatainTableByRow(driver, rowData=listOfData, rowIndex=counter)
             counter += 1
+
+
