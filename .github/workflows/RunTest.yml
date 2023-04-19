@@ -1,4 +1,4 @@
-name: Running Selenium Tests
+name: Setup & Run Selenium Tests
 on: [push]
 
 jobs:
@@ -18,3 +18,6 @@ jobs:
       
       - name: Install dependencies from Requirements.txt
         run: pip install -r requirements.txt
+      
+      - name: Running Selenium Tests
+        run:  pytest --browser CHROME --headless 1 -n auto
