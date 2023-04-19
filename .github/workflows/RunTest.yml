@@ -18,13 +18,20 @@ jobs:
       
       - name: Install dependencies from Requirements.txt
         run: pip install -r requirements.txt
+        
+
+        
+
+#       - name: Install Allure
+#         run: |
+#           wget -O allure-2.15.0.tgz https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.15.0/allure-commandline-2.15.0.tgz
+#           tar -zxvf allure-2.15.0.tgz -C /opt/
+#           export PATH=$PATH:/opt/allure-2.15.0/bin
+
       
       - name: Running Selenium Tests
-        run:  pytest --alluredir=allure-results --browser CHROME --headless 1 -v -s -m smoke
+        run:  pytest --alluredir=allure-results --browser CHROME --headless 1
         continue-on-error: true
-
-#       - name: Allure Report with history
-#         uses: simple-elf/allure-report-action@v1.6
 
       - name: Get Allure history
         uses: actions/checkout@v2
@@ -34,14 +41,14 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-      - name: Allure Report action from marketplace
+      - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
-        #id: allure-report
+        id: allure-report
         with:
           allure_results: allure-results
-          #gh_pages: gh-pages
-          #allure_report: allure-report
+          gh_pages: gh-pages
+          allure_report: allure-report
           allure_history: allure-history
 
       - name: Deploy report to Github Pages
@@ -51,14 +58,3 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
-
-      - name: Post the link to the report
-        if: always()
-        uses: Sibz/github-status-action@v1
-        with: 
-            authToken: ${{secrets.GITHUB_TOKEN}}
-            context: 'Test report'
-            state: 'success'
-            sha: ${{ github.event.pull_request.head.sha }}
-            target_url: HassanAbbas7357.github.io/github-allure-history/${{ github.run_number }}
-
