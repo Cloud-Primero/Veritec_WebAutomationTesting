@@ -13,7 +13,7 @@ Advanced Web Automation Framework for building testcases and generating intresti
 
 
 ## Reporting
-
+## Live Report : https://cloud-primero.github.io/Veritec_WebAutomationTesting/
 
 
 ![image](https://drive.google.com/uc?export=view&id=1I6QbkmG6mDaoRIxIxoA3fyVVMQWNLZzU)
