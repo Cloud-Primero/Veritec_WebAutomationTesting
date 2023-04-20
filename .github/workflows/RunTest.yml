@@ -31,6 +31,10 @@ jobs:
       - name: Test ENV Pass Vars
         run: |
           echo ${{ secrets.PASSWORD }}
+      
+      - name: Test ENV FAILED
+        run: |
+          echo ${{ secrets.PASWORD }}
 
 
 
