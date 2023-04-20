@@ -286,13 +286,13 @@ def test_AddNewUserAndVerify(driver):
     visitAddUserScreenWithLoginSteps(driver)
 
     with allure.step('When User Inputs Fills Form with Valid Data'):
-        find_byXpath(firstNameInput,driver).send_keys("Bot")
+        find_byXpath(firstNameInput, driver).send_keys("Bot")
         find_byXpath(lastNameInput, driver).send_keys("Hassan")
         find_byXpath(Email_xpath, driver).send_keys(get_randomEmail())
         find_byXpath(phoneInput, driver).send_keys("+923163466125")
         find_byXpath(roleClickField, driver).click()
-        find_byXpathAndWait(selectAdmin,driver).click()
-        find_byXpath(inActiveRadioBtn,driver).click()
+        find_byXpathAndWait(selectAdmin, driver).click()
+        find_byXpath(inActiveRadioBtn, driver).click()
 
     with allure.step('When User Clicks on AddUser Button'):
         find_byXpath(AddUserButton, driver).click()
@@ -301,3 +301,24 @@ def test_AddNewUserAndVerify(driver):
         verify_visibility_of_element_located(userAddedMessage, driver)
 
 
+@allure.feature("Users Feature")
+@allure.story("Add New User Using Magic Link")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_AddNewUserMagicLinkAndVerify(driver):
+    visitAddUserScreenWithLoginSteps(driver)
+
+    with allure.step('And User Taps on Magic Link Tab'):
+        find_byXpath(MaginLinkTab,driver).click()
+
+    with allure.step('When User Inputs Fills Form with Valid Data'):
+        find_byXpathAndWait('(//input[@placeholder="Enter Email"])[2]', driver).send_keys(get_randomEmail())
+        find_byXpath('(//span[text()="Select User Role"]/parent::div/parent::div)[2]', driver).click()
+        find_byXpathAndWait(selectAdmin, driver).click()
+        find_byXpath(inActiveRadioBtn, driver).click()
+    with allure.step('When User Clicks on AddUser Button'):
+        find_byXpath('(//button[contains(text(),"Add User")])[2]', driver).click()
+
+    with allure.step('Then User Should see "User Added Successfully" message'):
+        verify_visibility_of_element_located(userAddedMessage, driver)

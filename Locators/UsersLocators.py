@@ -14,9 +14,12 @@ firstRow = '(//tbody[@class="ant-table-tbody"]//tr[@class="ant-table-row ant-tab
 
 # Add New User
 addNewUserMain_xpath = '//a[text()="Add New User"]'
+MaginLinkTab = '//div[text()="Add by magic link"]'
 AddUserButton = '//button[contains(text(),"Add User")]'
 phoneInput = '//input[@name="phone"]'
 Email_xpath = '//input[@placeholder="Enter Email"]'
 roleClickField = '//span[text()="Select User Role"]/parent::div/parent::div'
 selectAdmin = '//div[text()="Super Admin"]'
 inActiveRadioBtn = '//span[text()="In-active"]/parent::label//input[@type="radio"]'
+
+
