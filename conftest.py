@@ -88,7 +88,7 @@ def driver(request):
     Storage.userData1 = {'Email': request.config.option.email,'Password': request.config.option.password}
     downloadsPath = os.getcwd() + '/Downloads/'
     if os.path.exists(downloadsPath):
-        print("Path Exists : ", downloadsPath)
+        print("Path Exists: ", downloadsPath)
     else:
         print("Path Doesn't Exists:", downloadsPath)
         # os.mkdir(downloadsPath)
