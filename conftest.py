@@ -22,6 +22,13 @@ def pytest_addoption(parser):
         "--headless", action="store"
     )
 
+    parser.addoption(
+        "--email", action="store"
+    )
+    parser.addoption(
+        "--password", action="store"
+    )
+
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -61,8 +68,9 @@ class Storage:
     temporaryWorkerData = TemoraryWorkerDataClass()
     temporaryWorkerUrlAdd = 'http://52.70.226.96:85/temporary-worker/add'
     temporaryWorkerUrl = 'http://52.70.226.96:85/temporary-worker'
-    userData1 = {'Email': 'hassan.abbas@cloudprimero.com',
-                 'Password': 'PowerPoint@123'}
+    # userData1 = {'Email': 'hassan.abbas@cloudprimero.com',
+    #              'Password': 'PowerPoint@123'}
+    userData1 = None
     userData2 = {'Email': 'ahassan.abbas@cloudprimero.com',
                  'Password': 'aPowerPoint@123'}
     requestId = None
@@ -77,6 +85,7 @@ class Storage:
 @pytest.fixture(scope='function')
 def driver(request):
     print("CURRENTWORKINGDIRECTORY :", os.getcwd())
+    Storage.userData1 = {'Email': request.config.option.email,'Password': request.config.option.password}
     downloadsPath = os.getcwd() + '/Downloads/'
     if os.path.exists(downloadsPath):
         print("Path Exists : ", downloadsPath)
