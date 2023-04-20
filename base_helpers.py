@@ -125,6 +125,7 @@ def find_Elements_byXpath(xpath, driver):
 
 
 def check_IFRedirectedON_ValidUrl(expectedUrl, driver):
+    print(expectedUrl, driver.current_url)
     assert expectedUrl == driver.current_url
 
 

@@ -17,7 +17,7 @@ def test_UsersScreenNavigation(driver):
     loginwithSteps(driver)
     UsersUrl = 'active-user'
     with allure.step('Then User clicks "Users" button on "Homepage" screen'):
-        scroll_into_element(UsersMainLink_xpath,driver)
+        scroll_into_element(UsersMainLink_xpath, driver)
         find_byXpath(UsersMainLink_xpath, driver).click()
     with allure.step('And User Should see "active-user" in the url'):
         assert UsersUrl in driver.current_url
@@ -154,7 +154,7 @@ def test_UserDeleteLastAndVerify(driver):
 def test_UserDeleteFirstAndVerify(driver):
     VisitUsersPageWithLogin(driver)
     with allure.step('And User select the last Item and Tap on Delete Button'):
-        verify_loaderAndWait(TableLoader_xpath,driver)
+        verify_loaderAndWait(TableLoader_xpath, driver)
         find_byXpathAndWait(deleteUser_xpath, driver).click()
         find_byXpathAndWait(mainDeleteYesButton, driver).click()
     with allure.step('Then User should see a "User Deleted Successfully" message'):
@@ -189,7 +189,115 @@ def test_verifyEditFormShowingChangesSavedSuccessWhenSubmittingFormWithoutChange
         find_byXpathAndWait(userEditBtn_xpath, driver).click()
     with allure.step('Then Click On Save Changes button without even changing anything"'):
         find_byXpathAndWait(saveChangesButton, driver).click()
-    with allure.step('And User Should see an error "Invalid User"'):
-        verify_visibility_of_element_located(invalidUserMessage,driver)
+    with allure.step('And User Should see Success Message "User Updated Successfully"'):
+        verify_visibility_of_element_located(invalidUserMessage, driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Edit the FirstName and Verify in Table")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_EditFirstNameAndVerifyInTable(driver):
+    VisitUsersPageWithLogin(driver)
+    FirstName = get_randomEmail().replace('@gmail.com', '')
+    with allure.step('And User Click on Edit Button'):
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        find_byXpathAndWait(userEditBtn_xpath, driver).click()
+    with allure.step('Then Click On Save Changes button after changing FirstName"'):
+        driver.execute_script("arguments[0].value='';", find_byXpath(firstNameInput, driver))
+        find_byXpath(firstNameInput, driver).send_keys(FirstName)
+        print(FirstName)
+        find_byXpathAndWait(saveChangesButton, driver).click()
+    with allure.step('And User Should see Success Message "User Updated SuccessFully"'):
+        verify_visibility_of_element_located(invalidUserMessage, driver)
+        sleep(3)
+    with allure.step('Then Verify FirstName Updated in the Table'):
+        Name = find_Elements_byXpathAndWait_getText(firstRow, driver)
+        print(Name)
+        assert FirstName == Name[1]
+
+
+@allure.feature("Users Feature")
+@allure.story("Edit the LastName and Verify in Table")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_EditLastNameAndVerifyInTable(driver):
+    VisitUsersPageWithLogin(driver)
+    FirstName = get_randomEmail().replace('@gmail.com', '')
+    with allure.step('And User Click on Edit Button'):
+        verify_loaderAndWait(TableLoader_xpath, driver)
+        find_byXpathAndWait(userEditBtn_xpath, driver).click()
+    with allure.step('Then Click On Save Changes button after changing LastName"'):
+        driver.execute_script("arguments[0].value='';", find_byXpath(lastNameInput, driver))
+        find_byXpath(lastNameInput, driver).send_keys(FirstName)
+        print(FirstName)
+        find_byXpathAndWait(saveChangesButton, driver).click()
+    with allure.step('And User Should see Success Message "User Updated SuccessFully"'):
+        verify_visibility_of_element_located(invalidUserMessage, driver)
+        sleep(3)
+    with allure.step('Then Verify LastName Updated in the Table'):
+        Name = find_Elements_byXpathAndWait_getText(firstRow, driver)
+        print(Name)
+        assert FirstName == Name[2]
+
+
+def visitAddUserScreenWithLoginSteps(driver):
+    VisitUsersPageWithLogin(driver)
+    AddUserUrl = '/user/add'
+    with allure.step('And User Click on Add User Button'):
+        # verify_loaderAndWait(TableLoader_xpath, driver)
+        scroll_to_bottom_of_page(driver)
+        find_byXpath(addNewUserMain_xpath, driver).click()
+    with allure.step('And Verify User is on UserAdd Screen'):
+        assert AddUserUrl in driver.current_url
+
+
+@allure.feature("Users Feature")
+@allure.story("Add New User Screen Click Submit Button And Verify Errors")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_AddAndVerifyErrors(driver):
+    visitAddUserScreenWithLoginSteps(driver)
+
+    with allure.step('When User Clicks on AddUser Button'):
+        find_byXpath(AddUserButton, driver).click()
+    with allure.step('Then User Should See Please Input message for all the required fields'):
+        verify_visibility_of_element_located("//div[@class='ant-form-item-explain-error' and text()='Please input "
+                                             "your first name!']", driver)
+        verify_visibility_of_element_located("//div[@class='ant-form-item-explain-error' and text()='Please input "
+                                             "your last name']", driver)
+        verify_visibility_of_element_located("//div[@class='ant-form-item-explain-error' and text()='Please input "
+                                             "your phone number!']", driver)
+        verify_visibility_of_element_located("//div[@class='ant-form-item-explain-error' and text()='Please Enter "
+                                             "Your Email!']", driver)
+        verify_visibility_of_element_located("//div[@class='ant-form-item-explain-error' and text()='Please Select "
+                                             "user role!']", driver)
+
+
+@allure.feature("Users Feature")
+@allure.story("Add New User And Verify In Table")
+@allure.severity(allure.severity_level.MINOR)
+@pytest.mark.regression
+@pytest.mark.sanity
+def test_AddNewUserAndVerify(driver):
+    visitAddUserScreenWithLoginSteps(driver)
+
+    with allure.step('When User Inputs Fills Form with Valid Data'):
+        find_byXpath(firstNameInput,driver).send_keys("Bot")
+        find_byXpath(lastNameInput, driver).send_keys("Hassan")
+        find_byXpath(Email_xpath, driver).send_keys(get_randomEmail())
+        find_byXpath(phoneInput, driver).send_keys("+923163466125")
+        find_byXpath(roleClickField, driver).click()
+        find_byXpathAndWait(selectAdmin,driver).click()
+        find_byXpath(inActiveRadioBtn,driver).click()
+
+    with allure.step('When User Clicks on AddUser Button'):
+        find_byXpath(AddUserButton, driver).click()
+
+    with allure.step('Then User Should see "User Added Successfully" message'):
+        verify_visibility_of_element_located(userAddedMessage, driver)
 
 

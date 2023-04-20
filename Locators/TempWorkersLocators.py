@@ -106,6 +106,7 @@ tableRowData_xpath = lambda index=0: f'(//tbody[@class="ant-table-tbody"]//tr[@c
                                      f'ant-table-row-level-0"])[{index + 1}]//td[not(.//label[' \
                                      f'@class="ant-radio-wrapper"])]'
 
+
 nextPage = '//li[@title="Next Page"]'
 # MainPage Elements
 mainTemporaryTable_xpath = '//table'
